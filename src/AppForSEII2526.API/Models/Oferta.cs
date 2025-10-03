@@ -8,7 +8,7 @@
         public int Id { get; set; }
         public tiposMetodoPago metodoPago { get; set; }
 
-        public tipoSDirigidaOferta parsSocio { get; set; }
+        public tiposDirigidaOferta paraSocio { get; set; }
 
         public override bool Equals(object? obj)
         {
@@ -45,9 +45,10 @@
         Efectivo
     }
 
-    public enum tipoSDirigidaOferta
+    public enum tiposDirigidaOferta
     {
         Socios,
         Clientes
     }
+
 }
