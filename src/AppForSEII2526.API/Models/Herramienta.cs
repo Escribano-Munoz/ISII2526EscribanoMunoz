@@ -6,17 +6,17 @@
         {
         }
 
-        public Herramienta(Fabricante fabricante, double precioCompra, int cantidadCompra, double precioAlquiler, int cantidadAlquiler)
+        public Herramienta(Fabricante fabricante, string material, string nombre, float precioCompra, float precioAlquiler)
         {
             Fabricante = fabricante;
+            Material = material;
+            Nombre = nombre;
             PrecioCompra = precioCompra;
-            CantidadCompra = cantidadCompra;
             PrecioAlquiler = precioAlquiler;
-            CantidadAlquiler = cantidadAlquiler;
         }
 
-        public Herramienta(int id, Fabricante fabricante, double precioCompra, int cantidadCompra, double precioAlquiler, int cantidadAlquiler)
-                : this(fabricante, precioCompra, cantidadCompra, precioAlquiler, cantidadAlquiler)
+        public Herramienta(int id, Fabricante fabricante, string material, string nombre, float precioCompra, float precioAlquiler)
+                : this(fabricante, material, nombre,  precioCompra, precioAlquiler)
         {
             Id = id;
 
@@ -31,25 +31,18 @@
         [Required]
         public string Material { get; set; }
         public string Nombre{ get; set; }
-
+        public int TiempoReparacion { get; set; }
 
         [Required]
-        [DataType(DataType.Currency)]
-        [Range(900, float.MaxValue, ErrorMessage = "El precio mínimo es 900")]
+
         [Display(Name = "Precio de Compra")]
-        public double PrecioCompra { get; set; }
-        [Range(35, 1000, ErrorMessage = "El precio debe estar entre 35 y 1000")]
+        public float PrecioCompra { get; set; }
+
         [Display(Name = "Precio de Alquiler")]
-        public double PrecioAlquiler { get; set; }
+        public float PrecioAlquiler { get; set; }
 
-        [Required]
-        [Display(Name = "Cantidad para Comprar")]
-        [Range(1, int.MaxValue, ErrorMessage = "La cantidad minima es 1")]
-        public float CantidadCompra { get; set; }
 
-        [Required]
-        [Display(Name = "Cantidad para Alquiler")]
-        public float CantidadAlquiler { get; set; }
+
 
         public IList<AlquilarItem> AlquilarItems { get; set; }
 
@@ -60,14 +53,12 @@
                 Fabricante == herramienta.Fabricante &&
                 Id == herramienta.Id &&
                 PrecioCompra == herramienta.PrecioCompra &&
-                CantidadCompra == herramienta.CantidadCompra &&
-                PrecioAlquiler == herramienta.PrecioAlquiler &&
-                CantidadAlquiler == herramienta.CantidadAlquiler;
+                PrecioAlquiler == herramienta.PrecioAlquiler;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, Fabricante, PrecioCompra, PrecioAlquiler, CantidadCompra, CantidadAlquiler);
+            return HashCode.Combine(Id, Fabricante, PrecioCompra, PrecioAlquiler);
         }
     }
 }
