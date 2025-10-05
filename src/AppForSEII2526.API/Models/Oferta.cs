@@ -10,6 +10,8 @@
 
         public tiposDirigidaOferta paraSocio { get; set; }
 
+        public IList<OfertaItem> OfertaItems { get; set; }
+
         public override bool Equals(object? obj)
         {
             return base.Equals(obj);
@@ -24,17 +26,18 @@
         {
         }
 
-        public Oferta(int id, DateTime fechaInicio, DateTime fechaFinal, DateTime fechaOferta) :
-            this(fechaInicio, fechaFinal, fechaOferta)
+        public Oferta(int id, DateTime fechaInicio, DateTime fechaFinal, DateTime fechaOferta, IList<OfertaItem> OfertaItems) :
+            this(fechaInicio, fechaFinal, fechaOferta,OfertaItems)
         {
             Id = id;
         }
 
-        public Oferta(DateTime fechaInicio, DateTime fechaFinal, DateTime fechaOferta)
+        public Oferta(DateTime fechaInicio, DateTime fechaFinal, DateTime fechaOferta, IList<OfertaItem> ofertaItems)
         {
             this.fechaInicio = fechaInicio;
             this.fechaFinal = fechaFinal;
             this.fechaOferta = fechaOferta;
+            OfertaItems = ofertaItems;
         }
     }
 

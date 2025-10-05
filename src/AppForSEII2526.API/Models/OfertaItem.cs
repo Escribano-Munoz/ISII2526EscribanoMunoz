@@ -1,23 +1,23 @@
 ﻿namespace AppForSEII2526.API.Models
 {
-    public class Ofertaltem
+    public class OfertaItem
     {
         public int idHerramienta { get; set; }
         public int idOferta { get; set; }
         public decimal porcentaje { get; set; }
         public decimal precioFinal { get; set; }
 
-        public Ofertaltem()
+        public OfertaItem()
         {
         }
 
-        public Ofertaltem(int idHerramienta, int idOferta, decimal porcentaje, decimal precioFinal) :
+        public OfertaItem(int idHerramienta, int idOferta, decimal porcentaje, decimal precioFinal) :
             this(idOferta, porcentaje, precioFinal)
         {
             this.idHerramienta = idHerramienta;
         }
 
-        public Ofertaltem(int idOferta, decimal porcentaje, decimal precioFinal)
+        public OfertaItem(int idOferta, decimal porcentaje, decimal precioFinal)
         {
             this.idOferta = idOferta;
             this.porcentaje = porcentaje;
