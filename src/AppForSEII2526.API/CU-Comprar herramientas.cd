@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="AppForSEII2526.API.Models.Fabricante">
+    <Position X="1" Y="0.75" Width="1.5" />
+    <AssociationLine Name="Herramienta" Type="AppForSEII2526.API.Models.Herramienta" FixedFromPoint="true">
+      <Path>
+        <Point X="2.5" Y="2.562" />
+        <Point X="3.75" Y="2.562" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAgAAAAAAAAAAAAIAAIAAAAAAAAgA=</HashCode>
+      <FileName>Models\Fabricante.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Herramienta" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="AppForSEII2526.API.Models.Herramienta">
+    <Position X="3.75" Y="0.75" Width="1.5" />
+    <AssociationLine Name="Fabricante" Type="AppForSEII2526.API.Models.Fabricante" FixedFromPoint="true">
+      <Path>
+        <Point X="3.75" Y="1.562" />
+        <Point X="2.5" Y="1.562" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AEACAAAEAAAAAAAAgAAAgAAQGAAQEIAAAAAAAIAAAAA=</HashCode>
+      <FileName>Models\Herramienta.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Fabricante" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="CompraItems" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="AppForSEII2526.API.Models.CompraItem">
+    <Position X="6.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAEAAAAAAAAAgAAAAAARABAAAIAAIAAEAAAAAAA=</HashCode>
+      <FileName>Models\CompraItem.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Herramienta" />
+      <Property Name="Compra" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="AppForSEII2526.API.Models.Compra">
+    <Position X="9.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABACCAAAAAAAAAAAgAAAAEACCAAAAIIAABAAAgAAEAA=</HashCode>
+      <FileName>Models\Compra.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="MetodoPago" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="CompraItems" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Enum Name="AppForSEII2526.API.Models.TiposMetodoPago">
+    <Position X="9.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAgAAAAAAAABAAA=</HashCode>
+      <FileName>Models\Compra.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

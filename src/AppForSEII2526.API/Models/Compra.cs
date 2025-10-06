@@ -13,7 +13,7 @@ namespace AppForSEII2526.API.Models
             this(nombreCliente, apellidoCliente, fechaCompra, direccionEnvio, compraItems, telefono, correoElectronico, metodoPago)
         {
             Id = id;
-            
+
         }
 
         public Compra(string nombreCliente, string apellidoCliente, DateTime fechaCompra, string direccionEnvio, IList<CompraItem> compraItems, string telefono, string correoElectronico, TiposMetodoPago metodoPago)
@@ -36,7 +36,7 @@ namespace AppForSEII2526.API.Models
         [Precision(10, 2)]
         public decimal precioTotal { get; set; }
 
-        public string NombreCliente { get;set; }
+        public string NombreCliente { get; set; }
 
         public string ApellidoCliente { get; set; }
 
@@ -54,14 +54,8 @@ namespace AppForSEII2526.API.Models
         [Required]
         public TiposMetodoPago MetodoPago { get; set; }
 
-        public enum TiposMetodoPago
-        {
-            TarjetaCredito,
-            PayPal,
-            Efectivo
-        }
 
-         public override bool Equals(object? obj)
+        public override bool Equals(object? obj)
         {
             return base.Equals(obj);
         }
@@ -72,5 +66,12 @@ namespace AppForSEII2526.API.Models
         }
 
 
+    }
+
+    public enum TiposMetodoPago
+    {
+        TarjetaCredito,
+        PayPal,
+        Efectivo
     }
 }
