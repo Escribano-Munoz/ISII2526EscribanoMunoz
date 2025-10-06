@@ -16,11 +16,12 @@
 
         }
 
-        public AlquilarItem(int herramientaId, Alquiler alquiler, double precio)
+        public AlquilarItem(int herramientaId, Alquiler alquiler, double precio, int cantidad)
         {
             HerramientaId = herramientaId;
             Alquiler = alquiler;
             Precio = precio;
+            Cantidad = cantidad;
         }
 
         [Key]
@@ -34,6 +35,8 @@
         public int AlquilerId { get; set; }
 
         public double Precio { get; set; }
+
+        public int Cantidad { get; set; }
 
         public override bool Equals(object? obj)
         {
