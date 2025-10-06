@@ -24,6 +24,7 @@
 
         public float precio { get; set; }
 
+        [Required]
         public int cantidad { get; set; }
 
         public Herramienta Herramienta { get; set; }
