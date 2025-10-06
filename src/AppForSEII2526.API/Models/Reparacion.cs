@@ -61,12 +61,12 @@
         {
             return base.GetHashCode();
         }
-
-        public enum tiposMetodosPago
-        {
-            TarjetaCredito,
-            PayPal,
-            Efectivo
-        }
+    }
+    public enum tiposMetodosPago
+    {
+        TarjetaCredito,
+        PayPal,
+        Efectivo
     }
 }
+
