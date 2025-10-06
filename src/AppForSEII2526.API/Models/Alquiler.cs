@@ -84,13 +84,14 @@
             return HashCode.Combine(Id, PrecioTotal, FechaAlquiler, FechaInicio, FechaFin, ApellidoCliente, NombreCliente, MetodoPago);
         }
 
-        public enum TiposMetodoPago
-        {
-            TarjetaCredito,
-            PayPal,
-            Efectivo
-        }
 
 
+    }
+
+    public enum TiposMetodoPago
+    {
+        TarjetaCredito,
+        PayPal,
+        Efectivo
     }
 }
