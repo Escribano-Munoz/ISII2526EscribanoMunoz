@@ -6,17 +6,16 @@
         {
         }
 
-        public Herramienta(Fabricante fabricante, string material, string nombre, float precioCompra, float precioAlquiler)
+        public Herramienta(Fabricante fabricante, string material, string nombre, float precio)
         {
             Fabricante = fabricante;
             Material = material;
             Nombre = nombre;
-            PrecioCompra = precioCompra;
-            PrecioAlquiler = precioAlquiler;
+            Precio = precio;
         }
 
-        public Herramienta(int id, Fabricante fabricante, string material, string nombre, float precioCompra, float precioAlquiler)
-                : this(fabricante, material, nombre,  precioCompra, precioAlquiler)
+        public Herramienta(int id, Fabricante fabricante, string material, string nombre, float precio)
+                : this(fabricante, material, nombre,  precio)
         {
             Id = id;
 
@@ -35,16 +34,17 @@
 
         [Required]
 
-        [Display(Name = "Precio de Compra")]
-        public float PrecioCompra { get; set; }
-
-        [Display(Name = "Precio de Alquiler")]
-        public float PrecioAlquiler { get; set; }
-
-
+        [Display(Name = "Precio")]
+        public float Precio{ get; set; }
 
 
         public IList<AlquilarItem> AlquilarItems { get; set; }
+
+        public IList<CompraItem> CompraItems { get; set; }
+
+        public IList<ReparacionItem> ReparacionItems { get; set; }
+
+        public IList<OfertaItem> OfertaItems { get; set; }
 
 
         public override bool Equals(object? obj)
@@ -52,13 +52,12 @@
             return obj is Herramienta herramienta &&
                 Fabricante == herramienta.Fabricante &&
                 Id == herramienta.Id &&
-                PrecioCompra == herramienta.PrecioCompra &&
-                PrecioAlquiler == herramienta.PrecioAlquiler;
+                Precio == herramienta.Precio;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, Fabricante, PrecioCompra, PrecioAlquiler);
+            return HashCode.Combine(Id, Fabricante, Precio);
         }
     }
 }

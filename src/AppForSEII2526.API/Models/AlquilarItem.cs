@@ -12,15 +12,16 @@
             HerramientaId = herramienta.Id;
             Alquiler = alquiler;
             AlquilerId = alquiler.Id;
-            PrecioAlquiler = herramienta.PrecioAlquiler;
+            Precio = herramienta.Precio;
 
         }
 
-        public AlquilarItem(int herramientaId, Alquiler alquiler, double precioAlquiler)
+        public AlquilarItem(int herramientaId, Alquiler alquiler, double precio, int cantidad)
         {
             HerramientaId = herramientaId;
             Alquiler = alquiler;
-            PrecioAlquiler = precioAlquiler;
+            Precio = precio;
+            Cantidad = cantidad;
         }
 
         [Key]
@@ -33,13 +34,15 @@
 
         public int AlquilerId { get; set; }
 
-        public double PrecioAlquiler { get; set; }
+        public double Precio { get; set; }
+
+        public int Cantidad {  get; set; }
 
         public override bool Equals(object? obj)
         {
             return obj is AlquilarItem linea &&
                    EqualityComparer<Herramienta>.Default.Equals(Herramienta, linea.Herramienta) &&
-                   PrecioAlquiler == linea.PrecioAlquiler &&
+                   Precio == linea.Precio &&
                    HerramientaId == linea.HerramientaId;
         }
 
