@@ -28,7 +28,6 @@
         [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser al menos 1")]
         public int Cantidad { get; set; }
 
-        [Precision(10, 2)]
         public float Precio { get; set; }
 
         public string Descripcion { get; set; }
