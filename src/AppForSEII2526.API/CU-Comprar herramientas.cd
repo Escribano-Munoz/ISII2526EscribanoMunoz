@@ -59,11 +59,11 @@
       <Property Name="CompraItems" />
     </ShowAsCollectionAssociation>
   </Class>
-  <Enum Name="AppForSEII2526.API.Models.TiposMetodoPago">
-    <Position X="9.5" Y="5" Width="1.5" />
+  <Enum Name="AppForSEII2526.API.Models.tiposMetodoPago">
+    <Position X="9.5" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAgAAAAAAAABAAA=</HashCode>
-      <FileName>Models\Compra.cs</FileName>
+      <FileName>Models\Oferta.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Segoe UI" Size="9" />

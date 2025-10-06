@@ -27,7 +27,6 @@
         }
         public int Id { get; set; }
 
-        [Precision(10, 2)]
         public float PrecioTotal { get; set; }
 
         public DateTime FechaRecogida { get; set; }
