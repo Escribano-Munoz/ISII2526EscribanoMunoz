@@ -15,7 +15,7 @@
         }
 
         public Herramienta(int id, Fabricante fabricante, string material, string nombre, float precio)
-                : this(fabricante, material, nombre,  precio)
+                : this(fabricante, material, nombre, precio)
         {
             Id = id;
 
@@ -29,13 +29,13 @@
 
         [Required]
         public string Material { get; set; }
-        public string Nombre{ get; set; }
+        public string Nombre { get; set; }
         public int TiempoReparacion { get; set; }
 
         [Required]
 
         [Display(Name = "Precio")]
-        public float Precio{ get; set; }
+        public float Precio { get; set; }
 
 
         public IList<AlquilarItem> AlquilarItems { get; set; }

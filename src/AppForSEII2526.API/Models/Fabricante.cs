@@ -14,6 +14,8 @@
         public int id { get; set; }
         public string nombre { get; set; }
 
+        public IList<Herramienta> Herramienta { get; set; } = new List<Herramienta>();
+
         public override bool Equals(object? obj)
         {
             return base.Equals(obj);
