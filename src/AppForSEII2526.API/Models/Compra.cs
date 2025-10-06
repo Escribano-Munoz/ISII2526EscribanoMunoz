@@ -1,4 +1,6 @@
-﻿namespace AppForSEII2526.API.Models
+﻿using System.Collections.Generic;
+
+namespace AppForSEII2526.API.Models
 {
     public class Compra
     {
@@ -7,23 +9,22 @@
             CompraItems = new List<CompraItem>();
         }
 
-        public Compra(int id, string nombreCliente, string apellidoCliente, ApplicationUser applicationUser, DateTime fechaCompra, string direccionEnvio, IList<CompraItem> compraItems, string telefono, string correoElectronico, tiposMetodoPago metodoPago) :
-            this(nombreCliente, apellidoCliente,applicationUser, fechaCompra, direccionEnvio, compraItems,telefono, correoElectronico, metodoPago)
+        public Compra(int id, string nombreCliente, string apellidoCliente, DateTime fechaCompra, string direccionEnvio, IList<CompraItem> compraItems, string telefono, string correoElectronico, TiposMetodoPago metodoPago) :
+            this(nombreCliente, apellidoCliente, fechaCompra, direccionEnvio, compraItems, telefono, correoElectronico, metodoPago)
         {
             Id = id;
             
         }
 
-        public Compra(string nombreCliente, string apellidoCliente, ApplicationUser applicationUser, DateTime fechaCompra, string direccionEnvio, IList<CompraItem> compraItems, string telefono, string correoElectronico, tiposMetodoPago metodoPago)
+        public Compra(string nombreCliente, string apellidoCliente, DateTime fechaCompra, string direccionEnvio, IList<CompraItem> compraItems, string telefono, string correoElectronico, TiposMetodoPago metodoPago)
         {
-            precioTotal = decimal.Round(compraItems.Sum(pi => pi.Precio * pi.Cantidad), 2);
+            precioTotal = Math.Round(CompraItems.Sum(ci => (decimal)ci.Precio * ci.Cantidad), 2);
 
             NombreCliente = nombreCliente;
             ApellidoCliente = apellidoCliente;
-            ApplicationUser = applicationUser;
             FechaCompra = fechaCompra;
             DireccionEnvio = direccionEnvio;
-            CompraItems = compraItems;
+            CompraItems = compraItems.ToList();
             Telefono = telefono;
             CorreoElectronico = correoElectronico;
             MetodoPago = metodoPago;
@@ -53,7 +54,7 @@
         [Required]
         public TiposMetodoPago MetodoPago { get; set; }
 
-        public enum tiposMetodoPago
+        public enum TiposMetodoPago
         {
             TarjetaCredito,
             PayPal,

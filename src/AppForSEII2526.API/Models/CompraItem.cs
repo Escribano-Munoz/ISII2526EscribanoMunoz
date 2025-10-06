@@ -6,14 +6,17 @@
         {
         }
 
-        public CompraItem(int idCompra, int idHerramienta, int cantidad, float precio, string descripcion)
+        public CompraItem(Herramienta herramienta, int idCompra, int idHerramienta, int cantidad, string descripcion)
         {
+            Herramienta = herramienta;
             IdCompra = idCompra;
             IdHerramienta = idHerramienta;
             Cantidad = cantidad;
-            Precio = precio;
+            Precio = herramienta.Precio;
             Descripcion = descripcion;
         }
+
+        public Herramienta Herramienta { get; set; }
 
         public int IdCompra { get; set; }  
 
