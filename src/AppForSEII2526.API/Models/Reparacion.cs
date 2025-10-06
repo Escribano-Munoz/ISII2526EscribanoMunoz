@@ -32,6 +32,7 @@
 
         public DateTime FechaRecogida { get; set; }
 
+        [Required]
         public DateTime FechaEntrega { get; set; }
 
         public IList<ReparacionItem> ReparacionItems { get; set; }
@@ -45,7 +46,6 @@
         public string ApellidoCliente { get; set; }
 
         [Display(Name = "Número de Teléfono")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, ingrese el número de teléfono")]
         public string NumTelefono { get; set; }
 
         [Display(Name = "Metodo de pago")]
