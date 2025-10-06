@@ -9,14 +9,14 @@ namespace AppForSEII2526.API.Models
             CompraItems = new List<CompraItem>();
         }
 
-        public Compra(int id, string nombreCliente, string apellidoCliente, DateTime fechaCompra, string direccionEnvio, IList<CompraItem> compraItems, string telefono, string correoElectronico, TiposMetodoPago metodoPago) :
+        public Compra(int id, string nombreCliente, string apellidoCliente, DateTime fechaCompra, string direccionEnvio, IList<CompraItem> compraItems, string telefono, string correoElectronico, tiposMetodoPago metodoPago) :
             this(nombreCliente, apellidoCliente, fechaCompra, direccionEnvio, compraItems, telefono, correoElectronico, metodoPago)
         {
             Id = id;
 
         }
 
-        public Compra(string nombreCliente, string apellidoCliente, DateTime fechaCompra, string direccionEnvio, IList<CompraItem> compraItems, string telefono, string correoElectronico, TiposMetodoPago metodoPago)
+        public Compra(string nombreCliente, string apellidoCliente, DateTime fechaCompra, string direccionEnvio, IList<CompraItem> compraItems, string telefono, string correoElectronico, tiposMetodoPago metodoPago)
         {
             precioTotal = Math.Round(CompraItems.Sum(ci => (decimal)ci.Precio * ci.Cantidad), 2);
 
@@ -52,7 +52,7 @@ namespace AppForSEII2526.API.Models
 
         [Display(Name = "Metodo de pago")]
         [Required]
-        public TiposMetodoPago MetodoPago { get; set; }
+        public tiposMetodoPago MetodoPago { get; set; }
 
 
         public override bool Equals(object? obj)
@@ -68,10 +68,5 @@ namespace AppForSEII2526.API.Models
 
     }
 
-    public enum TiposMetodoPago
-    {
-        TarjetaCredito,
-        PayPal,
-        Efectivo
-    }
+
 }

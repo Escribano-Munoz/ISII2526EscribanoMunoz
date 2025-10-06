@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using AppForSEII2526.API.Models;
+using Humanizer.Localisation;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using AppForSEII2526.API.Models;
 
 namespace AppForSEII2526.API.Data;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options) 
+public class ApplicationDbContext : DbContext
 {
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -16,12 +17,17 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         builder.Entity<OfertaItem>().HasKey(oi => new { oi.idHerramienta, oi.idOferta });
 
     }
-    public DbSet<Fabricante> Fabricantes { get; set; }
-    public DbSet<Herramienta> Herramientas { get; set; }
-    public DbSet<Reparacion> Reparaciones { get; set; }
-    public DbSet<Compra> Compras { get; set; }
-    public DbSet<Alquiler> Alquileres { get; set; }
-    public DbSet<Oferta> Ofertas { get; set; }
-    public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
+public DbSet<Fabricante> Fabricante { get; set; }
+public DbSet<Herramienta> Herramienta { get; set; }
+public DbSet<Reparacion> Reparacion { get; set; }
+public DbSet<Compra> Compra { get; set; }
+public DbSet<Alquiler> Alquiler { get; set; }
+public DbSet<Oferta> Oferta { get; set; }
+public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+: base(options)
+{
 }
+}
+ 
+
