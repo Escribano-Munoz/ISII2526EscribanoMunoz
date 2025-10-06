@@ -4,6 +4,7 @@
     {
         public int idHerramienta { get; set; }
         public int idOferta { get; set; }
+        [Required]
         public decimal porcentaje { get; set; }
         public decimal precioFinal { get; set; }
 

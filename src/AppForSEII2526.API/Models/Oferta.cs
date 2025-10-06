@@ -6,6 +6,7 @@
         public DateTime fechaInicio { get; set; }
         public DateTime fechaOferta { get; set; }
         public int Id { get; set; }
+        [Required]
         public tiposMetodoPago metodoPago { get; set; }
 
         public tiposDirigidaOferta paraSocio { get; set; }
