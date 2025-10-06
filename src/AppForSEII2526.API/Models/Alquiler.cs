@@ -8,7 +8,7 @@
 
         public Alquiler(DateTime fechaAlquiler, DateTime fechaInicio, DateTime fechaFin, string direccionEnvio, TiposMetodoPago metodoPago, string nombreCliente, string apellidoCliente, IList<AlquilarItem> alquilarItems)
         {
-            PrecioTotal = alquilarItems.Sum(ai => ai.PrecioAlquiler * (fechaInicio - fechaFin).Days);
+            PrecioTotal = alquilarItems.Sum(ai => ai.Precio * (fechaInicio - fechaFin).Days);
            
             FechaAlquiler = fechaAlquiler;
             FechaInicio = fechaInicio;
