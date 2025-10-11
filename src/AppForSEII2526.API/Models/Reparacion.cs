@@ -7,28 +7,25 @@
             ReparacionItems = new List<ReparacionItem>();
         }
 
-        public Reparacion(int id, string nombreCliente, string apellidoCliente, string numTelefono, IList<ReparacionItem> reparacionItems,
-            DateTime fechaRecogida, DateTime fechaEntrega, float precioTotal, tiposMetodosPago metodoPago) :
-            this(nombreCliente, apellidoCliente, numTelefono, reparacionItems, fechaRecogida, fechaEntrega, precioTotal, metodoPago)
+        public Reparacion(int id, IList<ReparacionItem> reparacionItems, DateTime fechaRecogida, DateTime fechaEntrega, float precioTotal, ApplicationUser applicationUser) :
+            this(reparacionItems, fechaRecogida, fechaEntrega, precioTotal, applicationUser)
         {
             Id = id;
         }
 
-        public Reparacion(string nombreCliente, string apellidoCliente, string numTelefono, IList<ReparacionItem> reparacionItems,
-            DateTime fechaRecogida, DateTime fechaEntrega, float precioTotal, tiposMetodosPago metodoPago)
+        public Reparacion(IList<ReparacionItem> reparacionItems, DateTime fechaRecogida, DateTime fechaEntrega, float precioTotal, ApplicationUser applicationUser)
         {
-            NombreCliente = nombreCliente;
-            ApellidoCliente = apellidoCliente;
-            NumTelefono = numTelefono;
             ReparacionItems = reparacionItems;
             FechaRecogida = fechaRecogida;
             FechaEntrega = fechaEntrega;
             PrecioTotal = precioTotal;
+            ApplicationUser = applicationUser;
         }
         public int Id { get; set; }
 
         public float PrecioTotal { get; set; }
 
+        [Required]
         public DateTime FechaRecogida { get; set; }
 
         [Required]
@@ -36,20 +33,8 @@
 
         public IList<ReparacionItem> ReparacionItems { get; set; }
 
-        [Display(Name = "Nombre del Cliente")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, ingrese el nombre del cliente")]
-        public string NombreCliente { get; set; }
 
-        [Display(Name = "Apellido del Cliente")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, ingrese el apellido del cliente")]
-        public string ApellidoCliente { get; set; }
-
-        [Display(Name = "Número de Teléfono")]
-        public string NumTelefono { get; set; }
-
-        [Display(Name = "Metodo de pago")]
-        [Required]
-        public tiposMetodosPago MetodoPago { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
 
         public override bool Equals(object? obj)
         {
