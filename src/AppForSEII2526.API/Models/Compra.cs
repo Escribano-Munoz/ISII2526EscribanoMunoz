@@ -9,25 +9,20 @@ namespace AppForSEII2526.API.Models
             CompraItems = new List<CompraItem>();
         }
 
-        public Compra(int id, string nombreCliente, string apellidoCliente, DateTime fechaCompra, string direccionEnvio, IList<CompraItem> compraItems, string telefono, string correoElectronico, tiposMetodoPago metodoPago) :
-            this(nombreCliente, apellidoCliente, fechaCompra, direccionEnvio, compraItems, telefono, correoElectronico, metodoPago)
+        public Compra(int id, DateTime fechaCompra, IList<CompraItem> compraItems, ApplicationUser applicationUser) :
+            this(fechaCompra, compraItems, applicationUser)
         {
             Id = id;
 
         }
 
-        public Compra(string nombreCliente, string apellidoCliente, DateTime fechaCompra, string direccionEnvio, IList<CompraItem> compraItems, string telefono, string correoElectronico, tiposMetodoPago metodoPago)
+        public Compra(DateTime fechaCompra, IList<CompraItem> compraItems, ApplicationUser applicationUser)
         {
             precioTotal = Math.Round(CompraItems.Sum(ci => (decimal)ci.Precio * ci.Cantidad), 2);
 
-            NombreCliente = nombreCliente;
-            ApellidoCliente = apellidoCliente;
             FechaCompra = fechaCompra;
-            DireccionEnvio = direccionEnvio;
             CompraItems = compraItems.ToList();
-            Telefono = telefono;
-            CorreoElectronico = correoElectronico;
-            MetodoPago = metodoPago;
+            ApplicationUser = applicationUser;
         }
 
 
@@ -36,23 +31,12 @@ namespace AppForSEII2526.API.Models
         [Precision(10, 2)]
         public decimal precioTotal { get; set; }
 
-        public string NombreCliente { get; set; }
-
-        public string ApellidoCliente { get; set; }
-
         public DateTime FechaCompra { get; set; }
-
-        public string DireccionEnvio { get; set; }
 
         public List<CompraItem> CompraItems { get; set; }
 
-        public string Telefono { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
 
-        public string CorreoElectronico { get; set; }
-
-        [Display(Name = "Metodo de pago")]
-        [Required]
-        public tiposMetodoPago MetodoPago { get; set; }
 
 
         public override bool Equals(object? obj)

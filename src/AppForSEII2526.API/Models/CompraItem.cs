@@ -25,11 +25,13 @@
 
         public int IdHerramienta { get; set; }
 
+        [Required]
         [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser al menos 1")]
         public int Cantidad { get; set; }
 
         public float Precio { get; set; }
 
+        [Required]
         public string Descripcion { get; set; }
 
         public override bool Equals(object? obj)
