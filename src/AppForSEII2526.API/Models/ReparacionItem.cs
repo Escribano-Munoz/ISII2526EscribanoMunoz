@@ -20,7 +20,7 @@
 
         public int idHerramienta { get; set; }
 
-        public string descripcion { get; set; }
+        public string? descripcion { get; set; }
 
         public float precio { get; set; }
 
