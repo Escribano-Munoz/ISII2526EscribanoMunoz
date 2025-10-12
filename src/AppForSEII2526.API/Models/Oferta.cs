@@ -2,14 +2,17 @@
 {
     public class Oferta
     {
+        [Required]
         public DateTime fechaFinal { get; set; }
+        [Required]
         public DateTime fechaInicio { get; set; }
         public DateTime fechaOferta { get; set; }
         public int Id { get; set; }
+
         [Required]
         public tiposMetodoPago metodoPago { get; set; }
-
-        public tiposDirigidaOferta paraSocio { get; set; }
+        
+        public tiposDirigidaOferta ? paraSocio { get; set; }
 
         public IList<OfertaItem> OfertaItems { get; set; }
 
