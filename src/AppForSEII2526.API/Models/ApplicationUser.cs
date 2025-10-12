@@ -7,13 +7,15 @@ public class ApplicationUser : IdentityUser {
     public ApplicationUser()
     {
     }
-    public ApplicationUser(int id, string nombreCliente, string apellidoCliente, string numTelefono, tiposMetodosPago metodoPago)
+    public ApplicationUser(int id, string nombreCliente, string apellidoCliente, string numTelefono, tiposMetodosPago metodoPago, string direccionEnvio, string? correo)
     {
         Id = id;
         NombreCliente = nombreCliente;
         ApellidoCliente = apellidoCliente;
         NumTelefono = numTelefono;
         MetodoPago = metodoPago;
+        DireccionEnvio = direccionEnvio;
+        Correo = correo;
     }
 
     public int Id { get; set; }
@@ -32,5 +34,12 @@ public class ApplicationUser : IdentityUser {
     [Display(Name = "Metodo de pago")]
     [Required]
     public tiposMetodosPago MetodoPago { get; set; }
+
+    [Display(Name = "Direccion de envio")]
+    [DisplayFormat(DataFormatString = "{0:C/CALLE, PROVINCIA}", ApplyFormatInEditMode = true)]
+    [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, Introduzca su direccion de envio")]
+    public string DireccionEnvio { get; set; }
+
+    public string? Correo { get; set; }
 
 }
