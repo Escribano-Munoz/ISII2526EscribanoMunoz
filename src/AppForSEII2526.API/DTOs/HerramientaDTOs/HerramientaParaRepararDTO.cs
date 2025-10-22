@@ -1,6 +1,4 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace AppForSEII2526.API.DTOs.HerramientaDTOs
+﻿namespace AppForSEII2526.API.DTOs.HerramientaDTOs
 {
     public class HerramientaParaRepararDTO
     {
