@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AppForSEII2526.API.DTOs.HerramientaDTOs;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AppForSEII2526.API.Controllers
@@ -36,12 +37,28 @@ namespace AppForSEII2526.API.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        [ProducesResponseType(typeof(IList<Herramienta>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult> GetHerramientasParaAlquilar()
+        [ProducesResponseType(typeof(IList<HerramientaParaAlquilarDTO>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> GetHerramientasParaAlquilar(string? nombre, string? fabricante, string? material, float? precio)
         {
-            IList<Herramienta> herramientas = await _context.Herramienta
+            var herramientas = await _context.Herramienta
+                .Include(h => h.Fabricante)
+                .Include(h => h.AlquilarItems)
+                    .ThenInclude(ai => ai.Alquiler)
+                .Where(h => ((h.Nombre.Contains(nombre)) || (nombre == null))
+                    && ((h.Fabricante.nombre.Equals(fabricante)) || (fabricante == null))
+                    && ((h.Material.Equals(material)) || (material == null))
+                    && ((h.Precio.Equals(precio) ) || (precio == null)))
+                .OrderBy(h => h.Nombre)
+                .Select(h => new HerramientaParaAlquilarDTO(
+                    h.Fabricante,
+                    h.Nombre,
+                    h.Material,
+                    h.Precio
+                ))
                 .ToListAsync();
-            return Ok(herramientas);    
+
+            return Ok(herramientas);
         }
+
     }
 }
