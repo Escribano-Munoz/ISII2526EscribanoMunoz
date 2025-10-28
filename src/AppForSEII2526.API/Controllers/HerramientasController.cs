@@ -18,6 +18,24 @@ namespace AppForSEII2526.API.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(typeof(IList<HerramientaParaCrearOfertaDTO>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> GetHerramientasParaCrearOfertas(string? nombre, string? fabricante, string? material, float? precio)
+        {
+            var herramientas = await _context.Herramienta
+                .Include(h => h.Fabricante)
+                .Include(h => h.OfertaItems)
+                    .ThenInclude(oi => oi.oferta)
+                .Where(h => ((h.Nombre.Contains(nombre)) || (nombre == null))
+                    && ((h.Material.Equals(material)) || (material == null))
+                    && ((h.Fabricante.nombre.Equals(fabricante)) || (fabricante == null))
+                    && ((h.Precio.Equals(precio)) || (precio == null)))
+                .OrderBy(h => h.Nombre)
+                .Select(h => new HerramientaParaCrearOfertaDTO(
+                    h.Fabricante,
+                    h.Material,
+                    h.Nombre,
 
         [HttpGet]
         [Route("[action]")]
