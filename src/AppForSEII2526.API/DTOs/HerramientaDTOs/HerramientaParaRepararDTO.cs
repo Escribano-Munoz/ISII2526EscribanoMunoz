@@ -1,12 +1,12 @@
-﻿namespace AppForSEII2526.API.Models
+﻿namespace AppForSEII2526.API.DTOs.HerramientaDTOs
 {
-    public class Herramienta
+    public class HerramientaParaRepararDTO
     {
-        public Herramienta()
+        public HerramientaParaRepararDTO()
         {
         }
 
-        public Herramienta(Fabricante fabricante, string material, string nombre, float precio, int tiempoReparacion)
+        public HerramientaParaRepararDTO(Fabricante fabricante, string material, string nombre, float precio, int tiempoReparacion)
         {
             Fabricante = fabricante;
             Material = material;
@@ -15,7 +15,7 @@
             TiempoReparacion = tiempoReparacion;
         }
 
-        public Herramienta(int id, Fabricante fabricante, string material, string nombre, float precio, int tiempoReparacion)
+        public HerramientaParaRepararDTO(int id, Fabricante fabricante, string material, string nombre, float precio, int tiempoReparacion)
                 : this(fabricante, material, nombre, precio, tiempoReparacion)
         {
             Id = id;
@@ -30,7 +30,6 @@
 
         [Required]
         public string Material { get; set; }
-        [Required]
         public string Nombre { get; set; }
         public int TiempoReparacion { get; set; }
 
@@ -40,13 +39,8 @@
         public float Precio { get; set; }
 
 
-        public IList<AlquilarItem> AlquilarItems { get; set; }
-
-        public IList<CompraItem> CompraItems { get; set; }
-
         public IList<ReparacionItem> ReparacionItems { get; set; }
 
-        public IList<OfertaItem> OfertaItems { get; set; }
 
 
         public override bool Equals(object? obj)
