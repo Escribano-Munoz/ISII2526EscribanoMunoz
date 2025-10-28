@@ -36,6 +36,12 @@ namespace AppForSEII2526.API.Controllers
                     h.Fabricante,
                     h.Material,
                     h.Nombre,
+                    h.Precio
+                ))
+                .ToListAsync();
+
+            return Ok(herramientas);
+        }
 
         [HttpGet]
         [Route("[action]")]
@@ -58,6 +64,12 @@ namespace AppForSEII2526.API.Controllers
                     h.Nombre,
                     h.Precio,
                     h.TiempoReparacion
+                    ))
+                .ToListAsync();
+
+            return Ok(herramientas);
+        }
+
         [HttpGet]
         [Route("[action]")]
         [ProducesResponseType(typeof(IList<HerramientaParaComprarDTO>), (int)HttpStatusCode.OK)]
@@ -76,6 +88,12 @@ namespace AppForSEII2526.API.Controllers
                     h.Fabricante,
                     h.Material,
                     h.Nombre,
+                    h.Precio
+                ))
+                .ToListAsync();
+
+            return Ok(herramientas);
+        }
 
         [HttpGet]
         [Route("[action]")]
