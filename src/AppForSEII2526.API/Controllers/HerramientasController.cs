@@ -9,6 +9,7 @@ namespace AppForSEII2526.API.Controllers
     public class HerramientasController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+
         private readonly ILogger<HerramientasController> _logger;
 
         public HerramientasController(ApplicationDbContext context, ILogger<HerramientasController> logger)
@@ -39,11 +40,48 @@ namespace AppForSEII2526.API.Controllers
                     h.Nombre,
                     h.Precio,
                     h.TiempoReparacion
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(typeof(IList<HerramientaParaComprarDTO>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> GetHerramientasParaComprar(string? nombre, string? material, string?fabricante, float? precio)
+        {
+            var herramientas = await _context.Herramienta
+                .Include(h => h.Fabricante)
+                .Include(h => h.CompraItems)
+                    .ThenInclude(ci => ci.Compra)
+                .Where(h => ((h.Nombre.Contains(nombre)) || (nombre == null))
+                    && ((h.Fabricante.nombre.Equals(fabricante)) || (fabricante == null))
+                    && ((h.Material.Equals(material)) || (fabricante == null))
+                    && ((h.Precio.Equals(precio)) || (precio == null)))
+                .OrderBy(h => h.Nombre)
+                .Select(h => new HerramientaParaComprarDTO(
+                    h.Fabricante,
+                    h.Material,
+                    h.Nombre,
+
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(typeof(IList<HerramientaParaAlquilarDTO>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult> GetHerramientasParaAlquilar(string? nombre, string? fabricante, string? material, float? precio)
+        {
+            var herramientas = await _context.Herramienta
+                .Include(h => h.Fabricante)
+                .Include(h => h.AlquilarItems)
+                    .ThenInclude(ai => ai.Alquiler)
+                .Where(h => ((h.Nombre.Contains(nombre)) || (nombre == null))
+                    && ((h.Fabricante.nombre.Equals(fabricante)) || (fabricante == null))
+                    && ((h.Material.Equals(material)) || (material == null))
+                    && ((h.Precio.Equals(precio) ) || (precio == null)))
+                .OrderBy(h => h.Nombre)
+                .Select(h => new HerramientaParaAlquilarDTO(
+                    h.Fabricante,
+                    h.Nombre,
+                    h.Material,
+                    h.Precio
                 ))
                 .ToListAsync();
 
             return Ok(herramientas);
         }
-
     }
 }
