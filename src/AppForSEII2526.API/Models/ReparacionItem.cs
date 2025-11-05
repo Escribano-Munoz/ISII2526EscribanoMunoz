@@ -13,7 +13,7 @@
             Reparacion = reparacion;
             idReparacion = reparacion.Id;
             precio = herramienta.Precio; 
-            cantidad = cantidad;
+            this.cantidad = cantidad;
         }
 
         public int idReparacion { get; set; }
