@@ -11,6 +11,7 @@
         [Required]
         public decimal porcentaje { get; set; }
         public decimal precioFinal { get; set; }
+        public decimal precioOriginal { get; set; }
 
         public OfertaItem()
         {
