@@ -74,7 +74,7 @@ namespace AppForSEII2526.API.Controllers
                 ModelState.AddModelError("RentalItems", "Error! You must include at least one movie to be rented");
 
             // if (!_context.ApplicationUsers.Any(au=>au.UserName==rentalForCreate.CustomerUserName))
-            var user = _context.ApplicationUsers.FirstOrDefault(au => au.UserName == rentalForCreate.CustomerUserName);
+            var user = _context.ApplicationUsers.FirstOrDefault(au => au.NombreCliente == alquilerCreate.NombreCliente);
             if (user == null)
                 ModelState.AddModelError("RentalApplicationUser", "Error! UserName is not registered");
 
@@ -82,11 +82,11 @@ namespace AppForSEII2526.API.Controllers
                 return BadRequest(new ValidationProblemDetails(ModelState));
 
 
-            var movieTitles = rentalForCreate.RentalItems.Select(ri => ri.Title).ToList<string>();
+            var herramientaNombres = alquilerCreate.AlquilarItems.Select(ai => ai.Nombre).ToList<string>();
 
-            var movies = _context.Movies.Include(m => m.RentalItems)
-                .ThenInclude(ri => ri.Rent)
-                .Where(m => movieTitles.Contains(m.Title))
+            var herramientas = _context.Herramienta.Include(h => h.AlquilarItems)
+                .ThenInclude(ai => ai.Alquiler)
+                .Where(h => herramientaNombres.Contains(h.Nombre))
 
                 //we use an anonymous type https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/anonymous-types
                 .Select(m => new {
