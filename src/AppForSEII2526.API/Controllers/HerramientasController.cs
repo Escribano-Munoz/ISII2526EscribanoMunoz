@@ -64,7 +64,7 @@ namespace AppForSEII2526.API.Controllers
                     h.Nombre,
                     h.Precio,
                     h.TiempoReparacion
-                ))
+                    ))
                 .ToListAsync();
 
             return Ok(herramientas);
@@ -73,7 +73,7 @@ namespace AppForSEII2526.API.Controllers
         [HttpGet]
         [Route("[action]")]
         [ProducesResponseType(typeof(IList<HerramientaParaComprarDTO>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult> GetHerramientasParaComprar(string? nombre, string? material, string?fabricante, float? precio)
+        public async Task<ActionResult> GetHerramientasParaComprar(string? nombre, string? material, string? fabricante, float? precio)
         {
             var herramientas = await _context.Herramienta
                 .Include(h => h.Fabricante)
@@ -89,7 +89,7 @@ namespace AppForSEII2526.API.Controllers
                     h.Material,
                     h.Nombre,
                     h.Precio
-                    ))
+                ))
                 .ToListAsync();
 
             return Ok(herramientas);
@@ -107,7 +107,7 @@ namespace AppForSEII2526.API.Controllers
                 .Where(h => ((h.Nombre.Contains(nombre)) || (nombre == null))
                     && ((h.Fabricante.nombre.Equals(fabricante)) || (fabricante == null))
                     && ((h.Material.Equals(material)) || (material == null))
-                    && ((h.Precio.Equals(precio) ) || (precio == null)))
+                    && ((h.Precio.Equals(precio)) || (precio == null)))
                 .OrderBy(h => h.Nombre)
                 .Select(h => new HerramientaParaAlquilarDTO(
                     h.Fabricante,
