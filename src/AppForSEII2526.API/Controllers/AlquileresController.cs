@@ -89,24 +89,24 @@ namespace AppForSEII2526.API.Controllers
                 .Where(h => herramientaNombres.Contains(h.Nombre))
 
                 //we use an anonymous type https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/anonymous-types
-                .Select(m => new {
-                    m.Id,
-                    m.Title,
-                    m.QuantityForRenting,
-                    m.PriceForRenting,
+                .Select(h => new {
+                    h.Id,
+                    h.Nombre,
+                    h.Material,
                     //we count the number of rentalItems that are within the rental period
-                    NumberOfRentedItems = m.RentalItems.Count(ri => ri.Rent.RentalDateFrom <= rentalForCreate.RentalDateTo
-                            && ri.Rent.RentalDateTo >= rentalForCreate.RentalDateFrom)
+                    NumeroDeAlquilados = h.AlquilarItems.Count(ai => ai.Alquiler.FechaInicio <= alquilerCreate.FechaFin
+                            && ai.Alquiler.FechaFin >= alquilerCreate.FechaInicio)
                 })
                 .ToList();
 
 
-            Rental rental = new Rental(rentalForCreate.CustomerUserName, rentalForCreate.CustomerNameSurname,
-                user, rentalForCreate.DeliveryAddress, DateTime.Now,
-                (AppForMovies.API.Models.PaymentMethodTypes)rentalForCreate.PaymentMethod,
-rentalForCreate.RentalDateFrom, rentalForCreate.RentalDateTo, new List<RentalItem>());
+            Alquiler alquiler = new Alquiler(alquilerCreate.NombreCliente, alquilerCreate.ApellidoCliente,
+                user, alquilerCreate.DireccionEnvio, DateTime.Now,
+                (AppForSEII2526.API.Models.TiposMetodoPago)alquilerCreate.MetodoPago,
+rentalForCreate.RentalDateFrom, rentalForCreate.RentalDateTo, new List<RentalItem>())
+            {
 
-
+            };
             rental.TotalPrice = 0;
             var numDays = (rental.RentalDateTo - rental.RentalDateFrom).TotalDays;
 

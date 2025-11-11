@@ -2,13 +2,14 @@
 {
     public class AlquilerCreateDTO
     {
-        public AlquilerCreateDTO(string nombreCliente, string apellidoCliente, string direccionEnvio, DateTime fechaInicio, DateTime fechaFin, IList<AlquilarItemDTO> alquilarItems)
+        public AlquilerCreateDTO(string nombreCliente, string apellidoCliente, string direccionEnvio, DateTime fechaInicio, DateTime fechaFin, TiposMetodoPago metodoPago, IList<AlquilarItemDTO> alquilarItems)
         {
             NombreCliente = nombreCliente ?? throw new ArgumentNullException(nameof(nombreCliente));
             ApellidoCliente = apellidoCliente ?? throw new ArgumentNullException(nameof(apellidoCliente));
             DireccionEnvio = direccionEnvio ?? throw new ArgumentNullException(nameof(direccionEnvio));
             FechaInicio = fechaInicio;
             FechaFin = fechaFin;
+            MetodoPago = metodoPago;
             AlquilarItems = alquilarItems ?? throw new ArgumentNullException(nameof(alquilarItems));
         }
 
@@ -35,6 +36,8 @@
         [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, pon tu nombre y apellidos")]
         [StringLength(50, MinimumLength = 10, ErrorMessage = "Nombre y apellidos debe contener al menos 10 caracteres")]
         public string ApellidoCliente { get; set; }
+
+        public TiposMetodoPago MetodoPago { get; set; }
 
         public IList<AlquilarItemDTO> AlquilarItems { get; set; }
 
