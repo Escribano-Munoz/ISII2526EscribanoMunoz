@@ -132,7 +132,7 @@ namespace AppForSEII2526.API.Controllers
                         herramienta.Id,
                         item.Cantidad,
                         item.Descripcion,
-                        herramienta.Precio * item.Cantidad,
+                        herramienta.Precio,
                         reparacion));
 
                         item.Precio = herramienta.Precio;
