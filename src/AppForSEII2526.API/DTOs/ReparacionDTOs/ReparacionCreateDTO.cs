@@ -23,7 +23,7 @@ namespace AppForSEII2526.API.DTOs.ReparacionDTOs
 
         public DateTime FechaEntrega { get; set; }
 
-
+        public tiposMetodoPago MetodoPago { get; set; }
 
         [EmailAddress]
         [Required]

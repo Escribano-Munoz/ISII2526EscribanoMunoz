@@ -24,7 +24,8 @@ public DbSet<Reparacion> Reparacion { get; set; }
 public DbSet<Compra> Compra { get; set; }
 public DbSet<Alquiler> Alquiler { get; set; }
 public DbSet<Oferta> Oferta { get; set; }
-public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 : base(options)
 {
 }
