@@ -38,6 +38,8 @@
 
         public int Periodo { get; set; }
 
+        public TiposMetodoPago MetodoPago { get; set; }
+
         public ApplicationUser ApplicationUser { get; set; }
 
         public IList<AlquilarItem> AlquilarItems { get; set; }

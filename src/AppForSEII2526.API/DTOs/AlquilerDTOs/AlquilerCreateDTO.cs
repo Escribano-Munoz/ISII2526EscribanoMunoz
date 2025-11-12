@@ -36,6 +36,8 @@
         [StringLength(50, MinimumLength = 10, ErrorMessage = "Nombre y apellidos debe contener al menos 10 caracteres")]
         public string ApellidoCliente { get; set; }
 
+        public TiposMetodoPago MetodoPago { get; set; }
+
         public IList<AlquilarItemDTO> AlquilarItems { get; set; }
 
         private int NumeroDeDias

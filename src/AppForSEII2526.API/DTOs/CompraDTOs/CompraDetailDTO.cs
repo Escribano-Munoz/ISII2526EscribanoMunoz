@@ -8,6 +8,7 @@
                    nombreCliente,
                    apellidoCliente,
                    direccionEnvio,
+                   fechaCompra,
                    compraItems)
         {
             Id = id;

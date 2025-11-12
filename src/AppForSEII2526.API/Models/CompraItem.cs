@@ -17,6 +17,15 @@
             Descripcion = descripcion;
         }
 
+        public CompraItem(Compra compra, int idHerramienta, float precio, int cantidad, string descripcion)
+        {
+            Compra = compra;
+            IdHerramienta = idHerramienta;
+            Precio = precio;
+            Cantidad = cantidad;
+            Descripcion = descripcion;
+        }
+
         public Herramienta Herramienta { get; set; }
 
         public Compra Compra { get; set; }

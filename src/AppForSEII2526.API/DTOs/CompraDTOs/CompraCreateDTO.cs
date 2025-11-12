@@ -3,12 +3,13 @@
     public class CompraCreateDTO
     {
         public CompraCreateDTO(string nombreCliente, string apellidoCliente,
-            string direccionEnvio,
+            string direccionEnvio, DateTime fechaCompra,
             IList<CompraItemDTO> compraItems)
         {
             NombreCliente = nombreCliente ?? throw new ArgumentNullException(nameof(nombreCliente));
             ApellidoCliente = apellidoCliente ?? throw new ArgumentNullException(nameof(apellidoCliente));
             DireccionEnvio = direccionEnvio ?? throw new ArgumentNullException(nameof(direccionEnvio));
+            FechaCompra = fechaCompra;
             CompraItems = compraItems ?? throw new ArgumentNullException(nameof(compraItems));
         }
 
@@ -32,8 +33,12 @@
         [StringLength(50, MinimumLength = 10, ErrorMessage = "Nombre y Apellido deben tener al menos 10 caracteres")]
         public string ApellidoCliente { get; set; }
 
+        public TiposMetodoPago MetodoPago { get; set; }
+
         public IList<CompraItemDTO> CompraItems { get; set; }
         [Required]
+
+        public DateTime FechaCompra { get; set; }
 
 
         [Display(Name = "Precio Total")]
