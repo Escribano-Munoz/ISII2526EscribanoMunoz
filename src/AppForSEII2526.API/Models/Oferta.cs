@@ -1,7 +1,11 @@
-﻿namespace AppForSEII2526.API.Models
+﻿
+namespace AppForSEII2526.API.Models
 {
     public class Oferta
     {
+        private tiposDirigidaOferta dirigidoA;
+        private DateTime now;
+
         [Required]
         public DateTime fechaFinal { get; set; }
         [Required]
@@ -16,6 +20,7 @@
 
         public IList<OfertaItem> OfertaItems { get; set; }
         public DateTime fechaCreacion { get; set; }
+        public decimal PrecioTotal { get; set; }
 
         public override bool Equals(object? obj)
         {
@@ -44,7 +49,18 @@
             this.fechaOferta = fechaOferta;
             OfertaItems = ofertaItems;
         }
+
+        public Oferta(DateTime fechaInicio, DateTime fechaFinal, tiposMetodoPago metodoPago, tiposDirigidaOferta dirigidoA, DateTime now, List<OfertaItem> ofertaItems)
+        {
+            this.fechaInicio = fechaInicio;
+            this.fechaFinal = fechaFinal;
+            this.metodoPago = metodoPago;
+            this.dirigidoA = dirigidoA;
+            this.now = now;
+            OfertaItems = ofertaItems;
+        }
     }
+
 
     public enum tiposMetodoPago
     {
