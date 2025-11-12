@@ -47,6 +47,16 @@
             this.cantidad = cantidad;
         }
 
+        public ReparacionItem(int idHerramienta, int cantidad, string descripcion, float precio, Reparacion reparacion)
+        {
+            this.idHerramienta = idHerramienta;
+            this.cantidad = cantidad;
+            this.descripcion = descripcion;
+            this.precio = precio;
+            this.Reparacion = reparacion;
+        }
+
+
         public override bool Equals(object? obj)
         {
             return base.Equals(obj);
