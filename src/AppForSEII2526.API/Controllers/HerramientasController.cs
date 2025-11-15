@@ -98,19 +98,15 @@ namespace AppForSEII2526.API.Controllers
         [HttpGet]
         [Route("[action]")]
         [ProducesResponseType(typeof(IList<HerramientaParaAlquilarDTO>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult> GetHerramientasParaAlquilar(string? nombre, string? fabricante, string? material, float? precio)
+        public async Task<ActionResult> GetHerramientasParaAlquilar(string? nombre, string? material)
         {
             var herramientas = await _context.Herramienta
                 .Include(h => h.Fabricante)
-                .Include(h => h.AlquilarItems)
-                    .ThenInclude(ai => ai.Alquiler)
                 .Where(h => ((h.Nombre.Contains(nombre)) || (nombre == null))
-                    && ((h.Fabricante.nombre.Equals(fabricante)) || (fabricante == null))
-                    && ((h.Material.Equals(material)) || (material == null))
-                    && ((h.Precio.Equals(precio)) || (precio == null)))
+                    && ((h.Material.Equals(material)) || (material == null)))
                 .OrderBy(h => h.Nombre)
                 .Select(h => new HerramientaParaAlquilarDTO(
-                    h.Fabricante,
+                    h.Fabricante.nombre,
                     h.Nombre,
                     h.Material,
                     h.Precio
