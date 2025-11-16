@@ -21,7 +21,7 @@ namespace AppForSEII2526.API.Controllers
         [HttpGet]
         [Route("[action]")]
         [ProducesResponseType(typeof(IList<HerramientaParaCrearOfertaDTO>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult> GetHerramientasParaCrearOfertas( string? fabricante, float? precio)
+        public async Task<ActionResult> GetHerramientasParaCrearOfertas(string? fabricante, float? precio)
         {
             var herramientas = await _context.Herramienta
                 .Include(h => h.Fabricante)

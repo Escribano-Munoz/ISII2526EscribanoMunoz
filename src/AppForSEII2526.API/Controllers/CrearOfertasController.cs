@@ -45,14 +45,11 @@ namespace AppForSEII2526.API.Controllers
                     (tiposDirigidaOferta)o.paraSocio, 
                     o.OfertaItems
                         .Select(oi => new OfertaItemDTO(
-                        
-                            oi.herramienta.Id,
                             oi.herramienta.Nombre,
                             oi.herramienta.Material,
                             oi.herramienta.Fabricante.nombre,
                             oi.precioOriginal,
-                            oi.precioFinal,
-                            oi.porcentaje
+                            oi.precioFinal
                         )).ToList<OfertaItemDTO>()))
                 .FirstOrDefaultAsync();
 
@@ -64,6 +61,7 @@ namespace AppForSEII2526.API.Controllers
 
             return Ok(oferta);
         }
+
         [HttpPost]
         [Route("[action]")]
         [ProducesResponseType(typeof(CrearOfertasDetailDTO), (int)HttpStatusCode.Created)]
@@ -91,8 +89,7 @@ namespace AppForSEII2526.API.Controllers
                 if (item.PorcentajeDescuento <= 0 || item.PorcentajeDescuento > 100)
                     ModelState.AddModelError("PorcentajeDescuento", $"Error! El porcentaje de rebaja debe estar entre 0% y 100%");
 
-                if (item.HerramientaID <= 0)
-                    ModelState.AddModelError("HerramientaID", "Error! El ID de la herramienta es obligatorio");
+                
 
                 if (string.IsNullOrEmpty(item.Nombre))
                     ModelState.AddModelError("Nombre", "Error! El nombre de la herramienta es obligatorio");
@@ -107,11 +104,11 @@ namespace AppForSEII2526.API.Controllers
             if (ModelState.ErrorCount > 0)
                 return BadRequest(new ValidationProblemDetails(ModelState));
 
-            var herramientaIds = ofertaForCreate.OfertaItems.Select(oi => oi.HerramientaID).ToList();
+            var nombreHerramienta = ofertaForCreate.OfertaItems.Select(oi => oi.Nombre).ToList();
 
             var herramientas = await _context.Herramienta
                 .Include(h => h.Fabricante)
-                .Where(h => herramientaIds.Contains(h.Id))
+                .Where(h => nombreHerramienta.Contains(h.Nombre))
                 .Select(h => new {
                     h.Id,
                     h.Nombre,
@@ -135,28 +132,29 @@ namespace AppForSEII2526.API.Controllers
 
             foreach (var item in ofertaForCreate.OfertaItems)
             {
-                var herramienta = herramientas.FirstOrDefault(h => h.Id == item.HerramientaID);
+                var herramienta = herramientas.FirstOrDefault(h => h.Nombre == item.Nombre);
 
                 
                 if (herramienta == null)
                 {
-                    ModelState.AddModelError("OfertaItems", $"Error! La herramienta con ID {item.HerramientaID} no existe");
+                    ModelState.AddModelError("OfertaItems", $"Error! La herramienta con ID {item. Nombre} no existe");
                 }
                 else
                 {
                     decimal precioOriginal = (decimal)herramienta.Precio;
                     decimal precioConDescuento = precioOriginal * (1 - (item.PorcentajeDescuento / 100m));
 
-                    oferta.OfertaItems.Add(new OfertaItem(
-                    idHerramienta: herramienta.Id,
-                    idOferta: 0,
-                    porcentaje: item.PorcentajeDescuento,
-                    precioFinal: precioConDescuento,
-                    oferta: oferta,
-                    herramienta: await _context.Herramienta.FindAsync(herramienta.Id)
-                    ));
-
+                    var ofertaItem = new OfertaItem
+                    {
+                        HerramientaId = herramienta.Id,
+                        oferta=oferta,
+                        porcentaje = item.PorcentajeDescuento,
+                        precioFinal = precioConDescuento
+                    };
                     item.PrecioFinal = precioConDescuento;
+                    oferta.OfertaItems.Add(ofertaItem);
+
+                    
 
                 }
                 oferta.PrecioTotal = oferta.OfertaItems.Sum(oi => oi.precioFinal);
