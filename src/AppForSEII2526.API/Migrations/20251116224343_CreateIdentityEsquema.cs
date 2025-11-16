@@ -1,0 +1,358 @@
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace AppForSEII2526.API.Migrations
+{
+    /// <inheritdoc />
+    public partial class CreateIdentityEsquema : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "ApplicationUsers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NombreCliente = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ApellidoCliente = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NumTelefono = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MetodoPago = table.Column<int>(type: "int", nullable: false),
+                    DireccionEnvio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Correo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApplicationUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Fabricante",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    nombre = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Fabricante", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Oferta",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    fechaFinal = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    fechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    fechaOferta = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    metodoPago = table.Column<int>(type: "int", nullable: false),
+                    paraSocio = table.Column<int>(type: "int", nullable: true),
+                    fechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PrecioTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Oferta", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Alquiler",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PrecioTotal = table.Column<double>(type: "float", nullable: false),
+                    FechaAlquiler = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaFin = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Periodo = table.Column<int>(type: "int", nullable: false),
+                    MetodoPago = table.Column<int>(type: "int", nullable: false),
+                    ApplicationUserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Alquiler", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Alquiler_ApplicationUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "ApplicationUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Compra",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    precioTotal = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    FechaCompra = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MetodoPago = table.Column<int>(type: "int", nullable: false),
+                    DireccionEnvio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ApplicationUserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Compra", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Compra_ApplicationUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "ApplicationUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reparacion",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PrecioTotal = table.Column<float>(type: "real", nullable: false),
+                    MetodoPago = table.Column<int>(type: "int", nullable: false),
+                    FechaRecogida = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaEntrega = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ApplicationUserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reparacion", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reparacion_ApplicationUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "ApplicationUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Herramienta",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Fabricanteid = table.Column<int>(type: "int", nullable: false),
+                    Material = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TiempoReparacion = table.Column<int>(type: "int", nullable: false),
+                    Precio = table.Column<float>(type: "real", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Herramienta", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Herramienta_Fabricante_Fabricanteid",
+                        column: x => x.Fabricanteid,
+                        principalTable: "Fabricante",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AlquilarItem",
+                columns: table => new
+                {
+                    HerramientaId = table.Column<int>(type: "int", nullable: false),
+                    AlquilerId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Precio = table.Column<double>(type: "float", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AlquilarItem", x => new { x.HerramientaId, x.AlquilerId });
+                    table.ForeignKey(
+                        name: "FK_AlquilarItem_Alquiler_AlquilerId",
+                        column: x => x.AlquilerId,
+                        principalTable: "Alquiler",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AlquilarItem_Herramienta_HerramientaId",
+                        column: x => x.HerramientaId,
+                        principalTable: "Herramienta",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CompraItem",
+                columns: table => new
+                {
+                    compraId = table.Column<int>(type: "int", nullable: false),
+                    herramientaId = table.Column<int>(type: "int", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false),
+                    Precio = table.Column<float>(type: "real", nullable: false),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompraItem", x => new { x.herramientaId, x.compraId });
+                    table.ForeignKey(
+                        name: "FK_CompraItem_Compra_compraId",
+                        column: x => x.compraId,
+                        principalTable: "Compra",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CompraItem_Herramienta_herramientaId",
+                        column: x => x.herramientaId,
+                        principalTable: "Herramienta",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OfertaItem",
+                columns: table => new
+                {
+                    HerramientaId = table.Column<int>(type: "int", nullable: false),
+                    OfertaId = table.Column<int>(type: "int", nullable: false),
+                    porcentaje = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    precioFinal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    precioOriginal = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OfertaItem", x => new { x.HerramientaId, x.OfertaId });
+                    table.ForeignKey(
+                        name: "FK_OfertaItem_Herramienta_HerramientaId",
+                        column: x => x.HerramientaId,
+                        principalTable: "Herramienta",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OfertaItem_Oferta_OfertaId",
+                        column: x => x.OfertaId,
+                        principalTable: "Oferta",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReparacionItem",
+                columns: table => new
+                {
+                    reparacionId = table.Column<int>(type: "int", nullable: false),
+                    herramientaId = table.Column<int>(type: "int", nullable: false),
+                    descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    precio = table.Column<float>(type: "real", nullable: false),
+                    cantidad = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReparacionItem", x => new { x.herramientaId, x.reparacionId });
+                    table.ForeignKey(
+                        name: "FK_ReparacionItem_Herramienta_herramientaId",
+                        column: x => x.herramientaId,
+                        principalTable: "Herramienta",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ReparacionItem_Reparacion_reparacionId",
+                        column: x => x.reparacionId,
+                        principalTable: "Reparacion",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AlquilarItem_AlquilerId",
+                table: "AlquilarItem",
+                column: "AlquilerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Alquiler_ApplicationUserId",
+                table: "Alquiler",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Compra_ApplicationUserId",
+                table: "Compra",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompraItem_compraId",
+                table: "CompraItem",
+                column: "compraId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Herramienta_Fabricanteid",
+                table: "Herramienta",
+                column: "Fabricanteid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OfertaItem_OfertaId",
+                table: "OfertaItem",
+                column: "OfertaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reparacion_ApplicationUserId",
+                table: "Reparacion",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReparacionItem_reparacionId",
+                table: "ReparacionItem",
+                column: "reparacionId");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "AlquilarItem");
+
+            migrationBuilder.DropTable(
+                name: "CompraItem");
+
+            migrationBuilder.DropTable(
+                name: "OfertaItem");
+
+            migrationBuilder.DropTable(
+                name: "ReparacionItem");
+
+            migrationBuilder.DropTable(
+                name: "Alquiler");
+
+            migrationBuilder.DropTable(
+                name: "Compra");
+
+            migrationBuilder.DropTable(
+                name: "Oferta");
+
+            migrationBuilder.DropTable(
+                name: "Herramienta");
+
+            migrationBuilder.DropTable(
+                name: "Reparacion");
+
+            migrationBuilder.DropTable(
+                name: "Fabricante");
+
+            migrationBuilder.DropTable(
+                name: "ApplicationUsers");
+        }
+    }
+}

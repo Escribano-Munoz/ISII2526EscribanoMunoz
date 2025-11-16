@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AppForSEII2526.UT.HerramientasController_test
 {
-    public class GetHerramientasParaReparar_test : AppForSEII2526SqliteUT
+    public class GetHerramientasParaReparar_test : AppForSEII25264SqliteUT
 
     {
         public GetHerramientasParaReparar_test()
