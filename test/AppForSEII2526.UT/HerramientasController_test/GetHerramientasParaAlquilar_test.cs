@@ -21,10 +21,10 @@ namespace AppForSEII2526.UT.HerramientasController_test
             };
 
             var herramientas = new List<Herramienta>(){
-                new Herramienta(fabricantes[0],"Hierro","Martillo" ,3,30),
-                new Herramienta(fabricantes[2],"Acero","Sierra", 7,50),
-                new Herramienta(fabricantes[1],"Acero","Cuchilla" ,2,20),
-                new Herramienta(fabricantes[0],"Hierro","Llave" , 4,35)
+                new Herramienta(fabricantes[0],"Hierro","Martillo" ,30,3),
+                new Herramienta(fabricantes[2],"Acero","Sierra", 50,7),
+                new Herramienta(fabricantes[1],"Acero","Cuchilla" ,20,2),
+                new Herramienta(fabricantes[0],"Hierro","Llave" , 35,4)
             };
             ApplicationUser user = new ApplicationUser(1, "Juan José", "Escribano Tarraga",  "640502222", tiposMetodosPago.TarjetaCredito,"Calle Carretera de Valencia", "juanjose.escribano@alu.uclm.es");
 
@@ -47,9 +47,9 @@ namespace AppForSEII2526.UT.HerramientasController_test
         {
 
             var herramientaDTOs = new List<HerramientaParaAlquilarDTO>() {
-                new HerramientaParaAlquilarDTO(1,"Makita","Hierro","Martillo" ,30),
-                new HerramientaParaAlquilarDTO(2,"Stanley","Acero","Sierra", 50),
-                new HerramientaParaAlquilarDTO(3,"Bosch","Acero","Cuchilla" ,20 ),
+                new HerramientaParaAlquilarDTO("Makita","Hierro","Martillo" ,30),
+                new HerramientaParaAlquilarDTO("Stanley","Acero","Sierra", 50),
+                new HerramientaParaAlquilarDTO("Bosch","Acero","Cuchilla" ,20 ),
             };
 
             var herramientaDTOsTC1 = new List<HerramientaParaAlquilarDTO>() { herramientaDTOs[1], herramientaDTOs[2] }
@@ -66,7 +66,7 @@ namespace AppForSEII2526.UT.HerramientasController_test
 
             var allTests = new List<object[]>
             {             //filters to apply - expected herramientas
-                                          //by default datefrom=today +1, dateto=today+2, thus herramientaDTOs[0] cannot be returned
+                                          
                 new object[] { null, null,  herramientaDTOsTC1,  },
                 new object[] { "Mar", null, herramientaDTOsTC2, },
                 new object[] { null, "Hierro", herramientaDTOsTC3, },
@@ -112,7 +112,7 @@ namespace AppForSEII2526.UT.HerramientasController_test
             var result = await controller.GetHerramientasParaAlquilar(null, null);
 
             //Assert
-            //we check that the response type is OK and obtain the list of movies
+            //we check that the response type is OK and obtain the list of herramientas
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             var problemDetails = Assert.IsType<ValidationProblemDetails>(badRequestResult.Value);
             var problem = problemDetails.Errors.First().Value[0];
