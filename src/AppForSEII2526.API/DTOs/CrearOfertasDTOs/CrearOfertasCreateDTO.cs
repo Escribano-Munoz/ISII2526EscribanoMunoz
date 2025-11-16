@@ -38,7 +38,8 @@ namespace AppForSEII2526.API.DTOs.CrearOfertasDTOs
         {
             get
             {
-                return OfertaItems.Sum(oi => (oi.PrecioOriginal * oi.PrecioFinal / 100));
+                if (OfertaItems == null || !OfertaItems.Any()) return 0;
+                return OfertaItems.Sum(oi => oi.PrecioOriginal - oi.PrecioFinal);
             }
         }
 
@@ -48,6 +49,7 @@ namespace AppForSEII2526.API.DTOs.CrearOfertasDTOs
         {
             get
             {
+                if (OfertaItems == null || !OfertaItems.Any()) return 0;
                 return OfertaItems.Sum(oi => oi.PrecioFinal);
             }
         }
