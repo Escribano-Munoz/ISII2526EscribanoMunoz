@@ -1,5 +1,6 @@
 ﻿namespace AppForSEII2526.API.Models
 {
+    [PrimaryKey("herramientaId","reparacionId")]
     public class ReparacionItem
     {
         public ReparacionItem()
@@ -9,16 +10,24 @@
         public ReparacionItem(Herramienta herramienta, int cantidad, Reparacion reparacion)
         {
             Herramienta = herramienta;
-            idHerramienta = herramienta.Id;
             Reparacion = reparacion;
-            idReparacion = reparacion.Id;
             precio = herramienta.Precio; 
             this.cantidad = cantidad;
         }
 
-        public int idReparacion { get; set; }
+        public ReparacionItem(Herramienta herramienta, Reparacion reparacion)
+        {
+            this.Herramienta = herramienta;
+            this.herramientaId = herramienta.Id;
+            this.Reparacion = reparacion;
+            this.reparacionId = reparacion.Id;
+            this.precio = herramienta.Precio;
 
-        public int idHerramienta { get; set; }
+        }
+
+        public int reparacionId { get; set; }
+
+        public int herramientaId { get; set; }
 
         public string? descripcion { get; set; }
 
@@ -33,8 +42,8 @@
 
         public ReparacionItem(int idReparacion, int idHerramienta, string descripcion, float precio, int cantidad)
         {
-            this.idReparacion = idReparacion;
-            this.idHerramienta = idHerramienta;
+            this.reparacionId = idReparacion;
+            this.herramientaId = idHerramienta;
             this.descripcion = descripcion;
             this.precio = precio;
             this.cantidad = cantidad;
@@ -47,9 +56,9 @@
             this.cantidad = cantidad;
         }
 
-        public ReparacionItem(int idHerramienta, int cantidad, string descripcion, float precio, Reparacion reparacion)
+        public ReparacionItem(int herramientaId, int cantidad, string descripcion, float precio, Reparacion reparacion)
         {
-            this.idHerramienta = idHerramienta;
+            this.herramientaId = herramientaId;
             this.cantidad = cantidad;
             this.descripcion = descripcion;
             this.precio = precio;

@@ -1,17 +1,18 @@
 ﻿namespace AppForSEII2526.API.Models
 {
+    [PrimaryKey ("herramientaId","compraId")]
     public class CompraItem
     {
         public CompraItem()
         {
         }
 
-        public CompraItem(Herramienta herramienta, Compra compra, int idCompra, int idHerramienta, int cantidad, string descripcion)
+        public CompraItem(Herramienta herramienta, Compra compra, int compraId, int herramientaId, int cantidad, string descripcion)
         {
             Herramienta = herramienta;
             Compra = compra;
-            IdCompra = idCompra;
-            IdHerramienta = idHerramienta;
+            this.compraId = compraId;
+            this.herramientaId = herramientaId;
             Cantidad = cantidad;
             Precio = herramienta.Precio;
             Descripcion = descripcion;
@@ -20,7 +21,7 @@
         public CompraItem(Compra compra, int idHerramienta, float precio, int cantidad, string descripcion)
         {
             Compra = compra;
-            IdHerramienta = idHerramienta;
+            herramientaId = herramientaId;
             Precio = precio;
             Cantidad = cantidad;
             Descripcion = descripcion;
@@ -30,9 +31,9 @@
 
         public Compra Compra { get; set; }
 
-        public int IdCompra { get; set; }
+        public int compraId { get; set; }
 
-        public int IdHerramienta { get; set; }
+        public int herramientaId { get; set; }
 
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser al menos 1")]

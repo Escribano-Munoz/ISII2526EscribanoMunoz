@@ -33,6 +33,7 @@ namespace AppForSEII2526.API.Controllers
 
             var reparacion = await _context.Reparacion
              .Where(r => r.Id == id)
+                 .Include(r => r.ApplicationUser)
                  .Include(r => r.ReparacionItems)
                     .ThenInclude(ri => ri.Herramienta)
                         .ThenInclude(herramienta => herramienta.Fabricante)

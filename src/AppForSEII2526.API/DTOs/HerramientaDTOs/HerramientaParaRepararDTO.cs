@@ -1,4 +1,6 @@
-﻿namespace AppForSEII2526.API.DTOs.HerramientaDTOs
+﻿using Humanizer.Localisation;
+
+namespace AppForSEII2526.API.DTOs.HerramientaDTOs
 {
     public class HerramientaParaRepararDTO
     {
@@ -6,7 +8,7 @@
         {
         }
 
-        public HerramientaParaRepararDTO(Fabricante fabricante, string material, string nombre, float precio, int tiempoReparacion)
+        public HerramientaParaRepararDTO(string fabricante, string material, string nombre, float precio, int tiempoReparacion)
         {
             Fabricante = fabricante;
             Material = material;
@@ -15,7 +17,7 @@
             TiempoReparacion = tiempoReparacion;
         }
 
-        public HerramientaParaRepararDTO(int id, Fabricante fabricante, string material, string nombre, float precio, int tiempoReparacion)
+        public HerramientaParaRepararDTO(int id, string fabricante, string material, string nombre, float precio, int tiempoReparacion)
                 : this(fabricante, material, nombre, precio, tiempoReparacion)
         {
             Id = id;
@@ -26,7 +28,7 @@
         public int Id { get; set; }
 
         [Required]
-        public Fabricante Fabricante { get; set; }
+        public string Fabricante { get; set; }
 
         [Required]
         public string Material { get; set; }
@@ -39,16 +41,12 @@
         public float Precio { get; set; }
 
 
-        public IList<ReparacionItem> ReparacionItems { get; set; }
-
-
-
         public override bool Equals(object? obj)
         {
-            return obj is Herramienta herramienta &&
-                Fabricante == herramienta.Fabricante &&
-                Id == herramienta.Id &&
-                Precio == herramienta.Precio;
+            return obj is HerramientaParaRepararDTO dTO &&
+                Fabricante == dTO.Fabricante &&
+                Id == dTO.Id &&
+                Precio == dTO.Precio;
         }
 
         public override int GetHashCode()
