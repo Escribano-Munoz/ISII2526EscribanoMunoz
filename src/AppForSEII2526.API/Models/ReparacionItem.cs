@@ -1,6 +1,6 @@
 ﻿namespace AppForSEII2526.API.Models
 {
-    [PrimaryKey("herramientaId", "reparacionId")]
+    [PrimaryKey("herramientaId","reparacionId")]
     public class ReparacionItem
     {
         public ReparacionItem()
@@ -11,7 +11,7 @@
         {
             Herramienta = herramienta;
             Reparacion = reparacion;
-            precio = herramienta.Precio;
+            precio = herramienta.Precio; 
             this.cantidad = cantidad;
         }
 
