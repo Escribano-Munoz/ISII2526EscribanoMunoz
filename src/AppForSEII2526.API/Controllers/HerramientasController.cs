@@ -77,11 +77,11 @@ namespace AppForSEII2526.API.Controllers
         {
             var herramientas = await _context.Herramienta
                 .Include(h => h.Fabricante)
-                .Where(h => ((h.Material.Equals(material)) || (material == null))
+                .Where(h => ((h.Material.Contains(material)) || (material == null))
                     && ((h.Precio.Equals(precio)) || (precio == null)))
                 .OrderBy(h => h.Nombre)
                 .Select(h => new HerramientaParaComprarDTO(
-                    h.Fabricante,
+                    h.Fabricante.nombre,
                     h.Material,
                     h.Nombre,
                     h.Precio

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppForSEII2526.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251112111929_CreateIdentityEsquema")]
+    [Migration("20251116203908_CreateIdentityEsquema")]
     partial class CreateIdentityEsquema
     {
         /// <inheritdoc />
@@ -195,33 +195,25 @@ namespace AppForSEII2526.API.Migrations
 
             modelBuilder.Entity("AppForSEII2526.API.Models.CompraItem", b =>
                 {
-                    b.Property<int>("IdHerramienta")
+                    b.Property<int>("herramientaId")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdCompra")
+                    b.Property<int>("compraId")
                         .HasColumnType("int");
 
                     b.Property<int>("Cantidad")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CompraId")
                         .HasColumnType("int");
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("HerramientaId")
-                        .HasColumnType("int");
-
                     b.Property<float>("Precio")
                         .HasColumnType("real");
 
-                    b.HasKey("IdHerramienta", "IdCompra");
+                    b.HasKey("herramientaId", "compraId");
 
-                    b.HasIndex("CompraId");
-
-                    b.HasIndex("HerramientaId");
+                    b.HasIndex("compraId");
 
                     b.ToTable("CompraItem");
                 });
@@ -311,12 +303,6 @@ namespace AppForSEII2526.API.Migrations
 
             modelBuilder.Entity("AppForSEII2526.API.Models.OfertaItem", b =>
                 {
-                    b.Property<int>("idHerramienta")
-                        .HasColumnType("int");
-
-                    b.Property<int>("idOferta")
-                        .HasColumnType("int");
-
                     b.Property<int>("herramientaId")
                         .HasColumnType("int");
 
@@ -332,9 +318,7 @@ namespace AppForSEII2526.API.Migrations
                     b.Property<decimal>("precioOriginal")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("idHerramienta", "idOferta");
-
-                    b.HasIndex("herramientaId");
+                    b.HasKey("herramientaId", "ofertaId");
 
                     b.HasIndex("ofertaId");
 
@@ -373,16 +357,10 @@ namespace AppForSEII2526.API.Migrations
 
             modelBuilder.Entity("AppForSEII2526.API.Models.ReparacionItem", b =>
                 {
-                    b.Property<int>("idHerramienta")
+                    b.Property<int>("herramientaId")
                         .HasColumnType("int");
 
-                    b.Property<int>("idReparacion")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HerramientaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ReparacionId")
+                    b.Property<int>("reparacionId")
                         .HasColumnType("int");
 
                     b.Property<int>("cantidad")
@@ -394,11 +372,9 @@ namespace AppForSEII2526.API.Migrations
                     b.Property<float>("precio")
                         .HasColumnType("real");
 
-                    b.HasKey("idHerramienta", "idReparacion");
+                    b.HasKey("herramientaId", "reparacionId");
 
-                    b.HasIndex("HerramientaId");
-
-                    b.HasIndex("ReparacionId");
+                    b.HasIndex("reparacionId");
 
                     b.ToTable("ReparacionItem");
                 });
@@ -448,13 +424,13 @@ namespace AppForSEII2526.API.Migrations
                 {
                     b.HasOne("AppForSEII2526.API.Models.Compra", "Compra")
                         .WithMany("CompraItems")
-                        .HasForeignKey("CompraId")
+                        .HasForeignKey("compraId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("AppForSEII2526.API.Models.Herramienta", "Herramienta")
                         .WithMany("CompraItems")
-                        .HasForeignKey("HerramientaId")
+                        .HasForeignKey("herramientaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -508,13 +484,13 @@ namespace AppForSEII2526.API.Migrations
                 {
                     b.HasOne("AppForSEII2526.API.Models.Herramienta", "Herramienta")
                         .WithMany("ReparacionItems")
-                        .HasForeignKey("HerramientaId")
+                        .HasForeignKey("herramientaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("AppForSEII2526.API.Models.Reparacion", "Reparacion")
                         .WithMany("ReparacionItems")
-                        .HasForeignKey("ReparacionId")
+                        .HasForeignKey("reparacionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
