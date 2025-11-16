@@ -6,7 +6,7 @@
         {
         }
 
-        public HerramientaParaComprarDTO(Fabricante fabricante, string material, string nombre, float precio)
+        public HerramientaParaComprarDTO(string fabricante, string material, string nombre, float precio)
         {
             Fabricante = fabricante;
             Material = material;
@@ -14,7 +14,7 @@
             Precio = precio;
         }
 
-        public HerramientaParaComprarDTO(int id, Fabricante fabricante, string material, string nombre, float precio)
+        public HerramientaParaComprarDTO(int id, string fabricante, string material, string nombre, float precio)
                 : this(fabricante, material, nombre, precio)
         {
             Id = id;
@@ -25,7 +25,7 @@
         public int Id { get; set; }
 
         [Required]
-        public Fabricante Fabricante { get; set; }
+        public string Fabricante { get; set; }
 
         [Required]
         public string Material { get; set; }
@@ -43,10 +43,10 @@
 
         public override bool Equals(object? obj)
         {
-            return obj is Herramienta herramienta &&
-                Fabricante == herramienta.Fabricante &&
-                Id == herramienta.Id &&
-                Precio == herramienta.Precio;
+            return obj is HerramientaParaComprarDTO dTO &&
+                Fabricante == dTO.Fabricante &&
+                Id == dTO.Id &&
+                Precio == dTO.Precio;
         }
 
         public override int GetHashCode()

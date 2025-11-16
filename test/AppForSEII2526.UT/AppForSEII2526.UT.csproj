@@ -36,6 +36,8 @@
 
   <ItemGroup>
     <Folder Include="ReparacionesController_test\" />
+    <Folder Include="ComprasController_test\" />
+    <Folder Include="AlquileresController_test\" />
   </ItemGroup>
 
 </Project>

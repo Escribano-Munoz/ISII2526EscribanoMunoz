@@ -1,6 +1,6 @@
 ﻿namespace AppForSEII2526.API.Models
 {
-    [PrimaryKey ("herramientaId","compraId")]
+    [PrimaryKey("herramientaId", "compraId")]
     public class CompraItem
     {
         public CompraItem()
@@ -18,13 +18,22 @@
             Descripcion = descripcion;
         }
 
-        public CompraItem(Compra compra, int idHerramienta, float precio, int cantidad, string descripcion)
+        public CompraItem(Compra compra, int herramientaId, float precio, int cantidad, string descripcion)
         {
             Compra = compra;
             herramientaId = herramientaId;
             Precio = precio;
             Cantidad = cantidad;
             Descripcion = descripcion;
+        }
+
+        public CompraItem(Herramienta herramienta, Compra compra)
+        {
+            Herramienta = herramienta;
+            Compra = compra;
+            herramientaId = herramienta.Id;
+            this.compraId = compra.Id;
+
         }
 
         public Herramienta Herramienta { get; set; }

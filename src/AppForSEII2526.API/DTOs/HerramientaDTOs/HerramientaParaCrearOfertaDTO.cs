@@ -38,7 +38,7 @@
         public float Precio { get; set; }
 
 
-        public IList<OfertaItem> OfertaItems { get; set; }
+        
 
 
         public override bool Equals(object? obj)

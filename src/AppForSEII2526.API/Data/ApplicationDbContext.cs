@@ -19,7 +19,9 @@ public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
 : base(options)
 {
+
 }
+
 }
  
 

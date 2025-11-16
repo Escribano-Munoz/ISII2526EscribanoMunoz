@@ -1,6 +1,6 @@
 ﻿namespace AppForSEII2526.API.Models
 {
-    [PrimaryKey ("HerramientaId","AlquilerId")]
+    [PrimaryKey("HerramientaId", "AlquilerId")]
     public class AlquilarItem
     {
         public AlquilarItem()
