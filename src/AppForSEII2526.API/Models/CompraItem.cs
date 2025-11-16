@@ -11,8 +11,8 @@
         {
             Herramienta = herramienta;
             Compra = compra;
-            compraId = compraId;
-            herramientaId = herramientaId;
+            this.compraId = compraId;
+            this.herramientaId = herramientaId;
             Cantidad = cantidad;
             Precio = herramienta.Precio;
             Descripcion = descripcion;
@@ -25,6 +25,15 @@
             Precio = precio;
             Cantidad = cantidad;
             Descripcion = descripcion;
+        }
+
+        public CompraItem(Herramienta herramienta, Compra compra)
+        {
+            Herramienta = herramienta;
+            Compra = compra;
+            herramientaId = herramienta.Id;
+            this.compraId = compra.Id;
+
         }
 
         public Herramienta Herramienta { get; set; }
