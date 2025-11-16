@@ -1,14 +1,15 @@
 ﻿namespace AppForSEII2526.API.Models
 {
-    [PrimaryKey("herramientaId", "ofertaId")]
+    [PrimaryKey("HerramientaId", "OfertaId")]
     public class OfertaItem
     {
-        public int herramientaId { get; set; }
-        public int ofertaId { get; set; }
+        public int HerramientaId { get; set; }
+        public int OfertaId { get; set; }
 
         public Oferta oferta { get; set; }
 
         public Herramienta herramienta { get; set; }
+
         [Required]
         public decimal porcentaje { get; set; }
         public decimal precioFinal { get; set; }
@@ -18,20 +19,12 @@
         {
         }
 
-        public OfertaItem(int idHerramienta, int idOferta, decimal porcentaje, decimal precioFinal, Oferta oferta, Herramienta herramienta) :
-            this(idOferta, porcentaje, precioFinal, oferta, herramienta)
+        public OfertaItem(Herramienta herramienta, Oferta oferta,decimal porcentaje, decimal precioFinal)
         {
-            this.herramientaId = idHerramienta;
-            this.oferta = oferta;
             this.herramienta = herramienta;
-        }
-
-        public OfertaItem(int idOferta, decimal porcentaje, decimal precioFinal, Oferta oferta, Herramienta herramienta)
-        {
-            this.ofertaId = idOferta;
+            this.oferta = oferta;
             this.porcentaje = porcentaje;
             this.precioFinal = precioFinal;
-            this.oferta = oferta;
         }
 
         public override bool Equals(object? obj)

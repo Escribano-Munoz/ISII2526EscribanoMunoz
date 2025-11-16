@@ -21,15 +21,11 @@ namespace AppForSEII2526.API.Controllers
         [HttpGet]
         [Route("[action]")]
         [ProducesResponseType(typeof(IList<HerramientaParaCrearOfertaDTO>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult> GetHerramientasParaCrearOfertas(string? nombre, string? fabricante, string? material, float? precio)
+        public async Task<ActionResult> GetHerramientasParaCrearOfertas(string? fabricante, float? precio)
         {
             var herramientas = await _context.Herramienta
                 .Include(h => h.Fabricante)
-                .Include(h => h.OfertaItems)
-                    .ThenInclude(oi => oi.oferta)
-                .Where(h => ((h.Nombre.Contains(nombre)) || (nombre == null))
-                    && ((h.Material.Equals(material)) || (material == null))
-                    && ((h.Fabricante.nombre.Equals(fabricante)) || (fabricante == null))
+                .Where(h => ((h.Fabricante.nombre.Equals(fabricante)) || (fabricante == null))
                     && ((h.Precio.Equals(precio)) || (precio == null)))
                 .OrderBy(h => h.Nombre)
                 .Select(h => new HerramientaParaCrearOfertaDTO(
@@ -94,21 +90,17 @@ namespace AppForSEII2526.API.Controllers
         [HttpGet]
         [Route("[action]")]
         [ProducesResponseType(typeof(IList<HerramientaParaAlquilarDTO>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult> GetHerramientasParaAlquilar(string? nombre, string? fabricante, string? material, float? precio)
+        public async Task<ActionResult> GetHerramientasParaAlquilar(string? nombre, string? material)
         {
             var herramientas = await _context.Herramienta
                 .Include(h => h.Fabricante)
-                .Include(h => h.AlquilarItems)
-                    .ThenInclude(ai => ai.Alquiler)
                 .Where(h => ((h.Nombre.Contains(nombre)) || (nombre == null))
-                    && ((h.Fabricante.nombre.Equals(fabricante)) || (fabricante == null))
-                    && ((h.Material.Equals(material)) || (material == null))
-                    && ((h.Precio.Equals(precio)) || (precio == null)))
+                    && ((h.Material.Contains(material)) || (material == null)))
                 .OrderBy(h => h.Nombre)
                 .Select(h => new HerramientaParaAlquilarDTO(
-                    h.Fabricante,
-                    h.Nombre,
+                    h.Fabricante.nombre,
                     h.Material,
+                    h.Nombre,
                     h.Precio
                 ))
                 .ToListAsync();

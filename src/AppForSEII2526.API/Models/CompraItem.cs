@@ -18,7 +18,7 @@
             Descripcion = descripcion;
         }
 
-        public CompraItem(Compra compra, int idHerramienta, float precio, int cantidad, string descripcion)
+        public CompraItem(Compra compra, int herramientaId, float precio, int cantidad, string descripcion)
         {
             Compra = compra;
             herramientaId = herramientaId;
