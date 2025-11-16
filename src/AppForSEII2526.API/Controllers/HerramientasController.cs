@@ -103,12 +103,12 @@ namespace AppForSEII2526.API.Controllers
             var herramientas = await _context.Herramienta
                 .Include(h => h.Fabricante)
                 .Where(h => ((h.Nombre.Contains(nombre)) || (nombre == null))
-                    && ((h.Material.Equals(material)) || (material == null)))
+                    && ((h.Material.Contains(material)) || (material == null)))
                 .OrderBy(h => h.Nombre)
                 .Select(h => new HerramientaParaAlquilarDTO(
                     h.Fabricante.nombre,
-                    h.Nombre,
                     h.Material,
+                    h.Nombre,
                     h.Precio
                 ))
                 .ToListAsync();
