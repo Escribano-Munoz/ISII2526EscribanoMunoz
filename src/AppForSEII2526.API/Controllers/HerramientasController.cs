@@ -21,12 +21,13 @@ namespace AppForSEII2526.API.Controllers
         [HttpGet]
         [Route("[action]")]
         [ProducesResponseType(typeof(IList<HerramientaParaCrearOfertaDTO>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult> GetHerramientasParaCrearOfertas(string? fabricante, float? precio)
+        public async Task<ActionResult> GetHerramientasParaCrearOfertas(string? fabricante, float? precio, string materialHerramienta)
         {
             var herramientas = await _context.Herramienta
                 .Include(h => h.Fabricante)
                 .Where(h => ((h.Fabricante.nombre.Equals(fabricante)) || (fabricante == null))
-                    && ((h.Precio.Equals(precio)) || (precio == null)))
+                    && ((h.Precio.Equals(precio)) || (precio == null))
+                    && ((h.Material.StartsWith(materialHerramienta)) || (materialHerramienta==null)))
                 .OrderBy(h => h.Nombre)
                 .Select(h => new HerramientaParaCrearOfertaDTO(
                     h.Fabricante,

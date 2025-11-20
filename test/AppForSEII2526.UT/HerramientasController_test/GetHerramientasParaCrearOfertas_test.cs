@@ -62,13 +62,14 @@ namespace AppForSEII2526.UT.HerramientasController_test
             var herramientaDTOsTC2 = new List<HerramientaParaCrearOfertaDTO>() { herramientasDTO[1] };
             var herramientaDTOsTC3 = new List<HerramientaParaCrearOfertaDTO>() { herramientasDTO[2] };
 
-        
+            var herramientaDTOsTC4 = new List<HerramientaParaCrearOfertaDTO>() { herramientasDTO[1], herramientasDTO[2] };
 
             var allTests = new List<object[]>
             {             //filters to apply - expected tools
-            new object[] { null, null, herramientaDTOsTC1 },
-            new object[] { "Bosch", null, herramientaDTOsTC2 },
-            new object[] { null, 50f, herramientaDTOsTC3 }
+            new object[] { null, null,null, herramientaDTOsTC1 },
+            new object[] { "Bosch", null,null, herramientaDTOsTC2 },
+            new object[] { null, 50f,null, herramientaDTOsTC3 },
+            new object[] { null, null,"Acero", herramientaDTOsTC4 }
             };
 
             return allTests;
@@ -79,14 +80,14 @@ namespace AppForSEII2526.UT.HerramientasController_test
         [MemberData(nameof(TestCasesFor_GetHerramientasParaCrearOfertas_OK))]
         [Trait("Database", "WithoutFixture")]
         [Trait("LevelTesting", "Unit Testing")]
-        public async Task GetHerramientasParaCrearOfertas_OK_test(string? fabricante, float? precio,
+        public async Task GetHerramientasParaCrearOfertas_OK_test(string? fabricante, float? precio, string? materialHerramienta,
             IList<HerramientaParaCrearOfertaDTO> expectedHerramientas)
         {
             // Arrange
             var controller = new HerramientasController(_context, null);
 
             // Act
-            var result = await controller.GetHerramientasParaCrearOfertas(fabricante, precio);
+            var result = await controller.GetHerramientasParaCrearOfertas(fabricante, precio,materialHerramienta);
 
             //Assert
             // Assert
@@ -115,7 +116,7 @@ namespace AppForSEII2526.UT.HerramientasController_test
             var controller = new HerramientasController(_context, logger);
 
             // Act
-            var result = await controller.GetHerramientasParaCrearOfertas("invalid", -10);
+            var result = await controller.GetHerramientasParaCrearOfertas("invalid", -10, "invalid");
 
             // Assert - Como no hay validación, debería devolver Ok con lista vacía
             var okResult = Assert.IsType<OkObjectResult>(result);
