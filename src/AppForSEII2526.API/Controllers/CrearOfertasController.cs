@@ -42,7 +42,7 @@ namespace AppForSEII2526.API.Controllers
                     o.fechaInicio,  
                     o.fechaFinal,     
                     o.metodoPago,
-                    (tiposDirigidaOferta)o.paraSocio, 
+                    o.paraSocio.HasValue ? (tiposDirigidaOferta?)o.paraSocio.Value : null, 
                     o.OfertaItems
                         .Select(oi => new OfertaItemDTO(
                             oi.herramienta.Nombre,
@@ -69,56 +69,57 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
         public async Task<ActionResult> CreateOferta(CrearOfertasCreateDTO ofertaForCreate)
         {
-            
+            if (_context.Oferta == null)
+            {
+                _logger.LogError("Error: Ofertas table does not exist");
+                return StatusCode(500, "Error al configurar la base de datos.");
+            }
+
+            // Validaciones de fechas (Flujo Alternativo 1)
             if (ofertaForCreate.FechaInicio <= DateTime.Today)
                 ModelState.AddModelError("FechaInicio", "Error! La fecha de inicio debe ser posterior a hoy");
 
             if (ofertaForCreate.FechaInicio >= ofertaForCreate.FechaFinal)
                 ModelState.AddModelError("FechaInicio&FechaFin", "Error! La oferta debe terminar después de que comience");
 
+            // Validación de items (Flujo Alternativo 2)
             if (ofertaForCreate.OfertaItems.Count == 0)
                 ModelState.AddModelError("OfertaItems", "Error! Debe incluir al menos una herramienta para la oferta");
 
-            
+            // Validación de método de pago
             if (!Enum.IsDefined(typeof(tiposMetodoPago), ofertaForCreate.MetodoPago))
                 ModelState.AddModelError("MetodoPago", "Error! El método de pago seleccionado no es válido");
 
-           
+            // Validación de porcentajes (Flujo Alternativo 3)
             foreach (var item in ofertaForCreate.OfertaItems)
             {
                 if (item.PorcentajeDescuento <= 0 || item.PorcentajeDescuento > 100)
                     ModelState.AddModelError("PorcentajeDescuento", $"Error! El porcentaje de rebaja debe estar entre 0% y 100%");
 
-                
-
+               
                 if (string.IsNullOrEmpty(item.Nombre))
                     ModelState.AddModelError("Nombre", "Error! El nombre de la herramienta es obligatorio");
-
-                if (string.IsNullOrEmpty(item.Material))
-                    ModelState.AddModelError("Material", "Error! El material de la herramienta es obligatorio");
-
-                if (item.PrecioOriginal <= 0)
-                    ModelState.AddModelError("PrecioOriginal", "Error! El precio original debe ser mayor a 0");
             }
 
             if (ModelState.ErrorCount > 0)
                 return BadRequest(new ValidationProblemDetails(ModelState));
 
-            var nombreHerramienta = ofertaForCreate.OfertaItems.Select(oi => oi.Nombre).ToList();
+            
+            var herramientaNombres = ofertaForCreate.OfertaItems.Select(oi => oi.Nombre).Distinct().ToList();
 
             var herramientas = await _context.Herramienta
                 .Include(h => h.Fabricante)
-                .Where(h => nombreHerramienta.Contains(h.Nombre))
+                .Where(h => herramientaNombres.Contains(h.Nombre))
                 .Select(h => new {
                     h.Id,
                     h.Nombre,
                     h.Material,
-                    Fabricante = h.Fabricante.nombre,
+                    FabricanteNombre = h.Fabricante.nombre,
                     Precio = h.Precio
                 })
                 .ToListAsync();
 
-            
+          
             Oferta oferta = new Oferta(
                 ofertaForCreate.FechaInicio,
                 ofertaForCreate.FechaFinal,
@@ -130,36 +131,42 @@ namespace AppForSEII2526.API.Controllers
 
             oferta.PrecioTotal = 0;
 
+            
             foreach (var item in ofertaForCreate.OfertaItems)
             {
                 var herramienta = herramientas.FirstOrDefault(h => h.Nombre == item.Nombre);
 
-                
+                // Validar que la herramienta existe
                 if (herramienta == null)
                 {
-                    ModelState.AddModelError("OfertaItems", $"Error! La herramienta con ID {item. Nombre} no existe");
+                    ModelState.AddModelError("OfertaItems", $"Error! La herramienta '{item.Nombre}' no existe");
                 }
                 else
                 {
+                    
                     decimal precioOriginal = (decimal)herramienta.Precio;
                     decimal precioConDescuento = precioOriginal * (1 - (item.PorcentajeDescuento / 100m));
 
-                    var ofertaItem = new OfertaItem
-                    {
-                        HerramientaId = herramienta.Id,
-                        oferta=oferta,
-                        porcentaje = item.PorcentajeDescuento,
-                        precioFinal = precioConDescuento
-                    };
-                    item.PrecioFinal = precioConDescuento;
-                    oferta.OfertaItems.Add(ofertaItem);
+                    
+                    var herramientaCompleta = await _context.Herramienta.FindAsync(herramienta.Id);
 
                     
+                    oferta.OfertaItems.Add(new OfertaItem(
+                        herramienta: herramientaCompleta,
+                        oferta: oferta,
+                        porcentaje: item.PorcentajeDescuento,
+                        precioFinal: precioConDescuento
+                    ));
 
+                    
+                    item.PrecioFinal = precioConDescuento;
                 }
-                oferta.PrecioTotal = oferta.OfertaItems.Sum(oi => oi.precioFinal);
             }
 
+            
+            oferta.PrecioTotal = oferta.OfertaItems.Sum(oi => oi.precioFinal);
+
+            
             if (ModelState.ErrorCount > 0)
             {
                 return BadRequest(new ValidationProblemDetails(ModelState));
@@ -169,7 +176,6 @@ namespace AppForSEII2526.API.Controllers
 
             try
             {
-                
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -179,6 +185,7 @@ namespace AppForSEII2526.API.Controllers
                 return Conflict("Error: " + ex.Message);
             }
 
+           
             var ofertaDetail = new CrearOfertasDetailDTO(
                 oferta.Id,
                 oferta.fechaCreacion,

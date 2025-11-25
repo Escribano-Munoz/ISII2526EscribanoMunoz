@@ -8,22 +8,22 @@ using System.Threading.Tasks;
 
 namespace AppForSEII2526.UT.CrearOfertasController_test
 {
-    public class GetDetailsParaCrearOferta : AppForSEII25264SqliteUT
+    public class GetDetailsParaCrearOferta_test : AppForSEII25264SqliteUT
     {
-        public GetDetailsParaCrearOferta()
+        public GetDetailsParaCrearOferta_test()
         {
             var fabricantes = new List<Fabricante>() {
-                new Fabricante("Makita"),
-                new Fabricante("Bosch"),
-                new Fabricante("Stanley"),
-                new Fabricante("Bob")
-            };
+            new Fabricante("Makita"),
+            new Fabricante("Bosch"),
+            new Fabricante("Stanley"),
+            new Fabricante("Bob")
+        };
 
             var herramientas = new List<Herramienta>(){
-                new Herramienta(fabricantes[0], "Hierro", "Martillo", 30, 3),
-                new Herramienta(fabricantes[2], "Acero", "Sierra", 50, 7),
-                new Herramienta(fabricantes[1], "Acero", "Cuchillo", 20, 2),
-            };
+            new Herramienta(fabricantes[0], "Hierro", "Martillo", 30, 3),
+            new Herramienta(fabricantes[2], "Acero", "Sierra", 50, 7),
+            new Herramienta(fabricantes[1], "Acero", "Cuchillo", 20, 2),
+        };
 
             var oferta = new Oferta(
                 DateTime.Today.AddDays(1),
@@ -32,21 +32,25 @@ namespace AppForSEII2526.UT.CrearOfertasController_test
                 tiposDirigidaOferta.Clientes,
                 DateTime.Now,
                 new List<OfertaItem>()
-            );
+            )
+            {
+                // ASIGNA EXPLÍCITAMENTE fechaCreacion
+                fechaCreacion = DateTime.Now.Date
+            };
 
             var ofertaItem1 = new OfertaItem(
-                herramientas[0], 
+                herramientas[0],
                 oferta,
-                10, 
-                27 
+                10,
+                27
             );
             ofertaItem1.precioOriginal = (decimal)herramientas[0].Precio;
 
             var ofertaItem2 = new OfertaItem(
                 herramientas[2],
                 oferta,
-                15, 
-                17  
+                15,
+                17
             );
             ofertaItem2.precioOriginal = (decimal)herramientas[2].Precio;
 
@@ -89,17 +93,20 @@ namespace AppForSEII2526.UT.CrearOfertasController_test
 
             var expectedOfertaItems = new List<OfertaItemDTO>
             {
-                new OfertaItemDTO("Martillo", "Hierro", "Makita", 30, 27),
-                new OfertaItemDTO("Cuchillo", "Acero", "Bosch", 20, 17)
+            new OfertaItemDTO("Martillo", "Hierro", "Makita", 30, 27),
+            new OfertaItemDTO("Cuchillo", "Acero", "Bosch", 20, 17)
             };
 
+            
+            var fechaActual = DateTime.Now.Date;
+
             var expectedOferta = new CrearOfertasDetailDTO(
-                1, 
-                new DateTime(2025, 12, 23),
-                new DateTime(2025, 12, 20),
-                new DateTime(2025, 12, 25), 
-                tiposMetodoPago.PayPal,
-                tiposDirigidaOferta.Clientes, 
+                1,
+                fechaActual,
+                DateTime.Today.AddDays(1),
+                DateTime.Today.AddDays(10),
+                tiposMetodoPago.TarjetaCredito,
+                tiposDirigidaOferta.Clientes,
                 expectedOfertaItems
             );
 
@@ -110,16 +117,18 @@ namespace AppForSEII2526.UT.CrearOfertasController_test
             var okResult = Assert.IsType<OkObjectResult>(result);
             var ofertaDTOActual = Assert.IsType<CrearOfertasDetailDTO>(okResult.Value);
 
-            //propiedades básicas
+            
             Assert.Equal(expectedOferta.Id, ofertaDTOActual.Id);
-            Assert.Equal(expectedOferta.FechaInicio, ofertaDTOActual.FechaInicio);
-            Assert.Equal(expectedOferta.FechaFinal, ofertaDTOActual.FechaFinal);
+            Assert.Equal(expectedOferta.FechaInicio.Date, ofertaDTOActual.FechaInicio.Date);
+            Assert.Equal(expectedOferta.FechaFinal.Date, ofertaDTOActual.FechaFinal.Date);
             Assert.Equal(expectedOferta.MetodoPago, ofertaDTOActual.MetodoPago);
             Assert.Equal(expectedOferta.DirigidoA, ofertaDTOActual.DirigidoA);
 
-            //items
-            Assert.Equal(expectedOferta.OfertaItems.Count, ofertaDTOActual.OfertaItems.Count);
+           
+            Assert.NotEqual(DateTime.MinValue, ofertaDTOActual.FechaCreacion);
 
+            
+            Assert.Equal(expectedOferta.OfertaItems.Count, ofertaDTOActual.OfertaItems.Count);
             for (int i = 0; i < expectedOferta.OfertaItems.Count; i++)
             {
                 Assert.Equal(expectedOferta.OfertaItems[i].Nombre, ofertaDTOActual.OfertaItems[i].Nombre);
