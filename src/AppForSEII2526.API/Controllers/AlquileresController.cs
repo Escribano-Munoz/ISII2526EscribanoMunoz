@@ -73,7 +73,18 @@ namespace AppForSEII2526.API.Controllers
             if (alquilerCreate.AlquilarItems.Count == 0)
                 ModelState.AddModelError("AlquilarItems", "Error! Debes incluir una herramienta para que pueda ser alquilada");
 
-            
+            if (!Enum.IsDefined(typeof(TiposMetodoPago), alquilerCreate.MetodoPago))
+            {
+                ModelState.AddModelError("MetodoPago", "Error! El Metodo de Pago no es valido");
+            }
+
+            foreach (var item in alquilerCreate.AlquilarItems)
+            {
+                if (item.Cantidad <= 0)
+                {
+                    ModelState.AddModelError("AlquilarItems", "Error! Debes seleccionar al menos una herramienta de ese tipo para alquilarla");
+                }
+            }
             var user = _context.ApplicationUsers.FirstOrDefault(au => au.NombreCliente == alquilerCreate.NombreCliente);
             if (user == null)
                 ModelState.AddModelError("AlquilerApplicationUser", "Error! Nombre de usuario no registrado");
@@ -82,11 +93,11 @@ namespace AppForSEII2526.API.Controllers
                 return BadRequest(new ValidationProblemDetails(ModelState));
 
 
-            var herramientaNombres = alquilerCreate.AlquilarItems.Select(ai => ai.Nombre).ToList<string>();
+            var herramientaIDs = alquilerCreate.AlquilarItems.Select(ai => ai.HerramientaID).ToList();
 
-            var herramientas = _context.Herramienta.Include(h => h.AlquilarItems)
+            var herramientas = await _context.Herramienta.Include(h => h.AlquilarItems)
                 .ThenInclude(ai => ai.Alquiler)
-                .Where(h => herramientaNombres.Contains(h.Nombre))
+                .Where(h => herramientaIDs.Contains(h.Id))
 
                 //we use an anonymous type https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/anonymous-types
                 .Select(h => new {
@@ -98,36 +109,43 @@ namespace AppForSEII2526.API.Controllers
                     NumeroDeAlquilados = h.AlquilarItems.Count(ai => ai.Alquiler.FechaInicio <= alquilerCreate.FechaFin
                             && ai.Alquiler.FechaFin >= alquilerCreate.FechaInicio)
                 })
-                .ToList();
+                .ToListAsync();
 
 
-            Alquiler alquiler = new Alquiler(user, alquilerCreate.PrecioTotal, DateTime.Now, alquilerCreate.FechaInicio, alquilerCreate.FechaFin, alquilerCreate.DireccionEnvio, (AppForSEII2526.API.Models.TiposMetodoPago)alquilerCreate.MetodoPago, alquilerCreate.NombreCliente, alquilerCreate.ApellidoCliente, new List<AlquilarItem>())
+            Alquiler alquiler = new Alquiler(user, 0, DateTime.Today, alquilerCreate.FechaInicio, alquilerCreate.FechaFin, alquilerCreate.DireccionEnvio, (AppForSEII2526.API.Models.TiposMetodoPago)alquilerCreate.MetodoPago, alquilerCreate.NombreCliente, alquilerCreate.ApellidoCliente, new List<AlquilarItem>())
             {
 
             };
-            alquiler.PrecioTotal = 0;
+            
             var numDays = (alquiler.FechaFin - alquiler.FechaInicio).TotalDays;
 
 
             foreach (var item in alquilerCreate.AlquilarItems)
             {
-                var herramienta = herramientas.FirstOrDefault(h => h.Nombre == item.Nombre);
+                var herramienta = herramientas.FirstOrDefault(h => h.Id == item.HerramientaID);
                 //we must check that there is enough quantity to be rented in the database
                 if ((herramienta == null) || (herramienta.NumeroDeAlquilados >= item.Cantidad))
                 {
-                    ModelState.AddModelError("AlquilarItems", $"Error! El nombre de la herramienta '{item.Nombre}' no esta disponible para ser alquilado desde {alquilerCreate.FechaInicio.ToShortDateString()} hasta {alquilerCreate.FechaFin.ToShortDateString()}");
+                    ModelState.AddModelError("AlquilarItems", $"Error! La herramienta con ID '{item.HerramientaID}' no esta disponible para ser alquilada");
+                    continue;
                 }
-                else
-                {
-                    // rental does not exist in the database yet and does not have a valid Id, so we must relate rentalitem to the object rental
-                    alquiler.AlquilarItems.Add(new AlquilarItem(herramienta.Id, alquiler, herramienta.Precio, item.Cantidad));
-                    item.Precio = herramienta.Precio;
-                }
+                
+                   
+                alquiler.AlquilarItems.Add(new AlquilarItem(
+                    herramienta.Id,
+                    alquiler,
+                    herramienta.Precio,
+                    item.Cantidad));
+
+                item.Precio = herramienta.Precio;
+                
             }
+
+
             alquiler.PrecioTotal = alquiler.AlquilarItems.Sum(ai => ai.Precio * numDays);
 
 
-            //if there is any problem because of the available quantity of movies or because the movie does not exist
+            //if there is any problem because of the available quantity of herramientas or because the herramienta does not exist
             if (ModelState.ErrorCount > 0)
             {
                 return BadRequest(new ValidationProblemDetails(ModelState));
