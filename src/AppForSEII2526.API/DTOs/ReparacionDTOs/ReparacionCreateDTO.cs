@@ -42,7 +42,7 @@ namespace AppForSEII2526.API.DTOs.ReparacionDTOs
         public string NombreCliente { get; set; }
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, introduce tu Apellido")]
-        [StringLength(50, MinimumLength = 4, ErrorMessage = "Nombre debe tener al menos 4 caracteres")]
+        [StringLength(50, MinimumLength = 4, ErrorMessage = "Apellido debe tener al menos 4 caracteres")]
         public string ApellidoCliente { get; set; }
 
         public IList<ReparacionItemDTO> ReparacionItems { get; set; }
