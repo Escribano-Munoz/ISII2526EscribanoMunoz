@@ -14,6 +14,12 @@
         {
             Id = id;
         }
+
+        public ReparacionDetailDTO(int id, string nombreCliente, string apellidoCliente, DateTime fechaRecogida,
+            DateTime fechaEntrega, tiposMetodoPago metodoPago, IList<ReparacionItemDTO> reparacionItems)
+        {
+            Id = id;
+        }
         public int Id { get; set; }
 
 
