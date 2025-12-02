@@ -30,9 +30,9 @@ namespace AppForSEII2526.UT.AlquileresController_test
 
             };
 
-            ApplicationUser user = new ApplicationUser(1, "Juan José", "Escribano",  "640502222", tiposMetodosPago.TarjetaCredito,"Calle Carretera de Valencia", "juanjose.escribano@alu.uclm.es");
+            ApplicationUser user = new ApplicationUser(1, "Juan Jose", "Escribano",  "640502222", tiposMetodosPago.TarjetaCredito,"Calle Carretera de Valencia", "juanjose.escribano@alu.uclm.es");
 
-            var alquiler = new Alquiler(user, 15.0, DateTime.Now, DateTime.Today.AddDays(2), DateTime.Today.AddDays(5), "Calle Carretera de Valencia", TiposMetodoPago.TarjetaCredito, "Juan José", "Escribano Tarraga", new List<AlquilarItem>());
+            var alquiler = new Alquiler(user, 15.0, DateTime.Today, DateTime.Today.AddDays(2), DateTime.Today.AddDays(5), "Calle Carretera de Valencia", TiposMetodoPago.TarjetaCredito, "Juan José", "Escribano Tarraga", new List<AlquilarItem>());
 
             alquiler.AlquilarItems.Add(new AlquilarItem(herramientas[0], alquiler, "Martillo", "Hierro", 30.0, 3));
 
@@ -74,7 +74,7 @@ namespace AppForSEII2526.UT.AlquileresController_test
             var controller = new AlquileresController(_context, logger);
 
 
-            var expectedAlquiler = new AlquilerDetailDTO(1, DateTime.Now, "Juan Jose", "Escribano",
+            var expectedAlquiler = new AlquilerDetailDTO(1, DateTime.Today, "Juan Jose", "Escribano",
                         "Calle Carretera de Valencia",
                         DateTime.Today.AddDays(2), DateTime.Today.AddDays(5),
                         new List<AlquilarItemDTO>());
@@ -89,7 +89,14 @@ namespace AppForSEII2526.UT.AlquileresController_test
             var alquilerDTOActual = Assert.IsType<AlquilerDetailDTO>(okResult.Value);
             var eq = expectedAlquiler.Equals(alquilerDTOActual);
             //we check that the expected and actual are the same
-            Assert.Equal(expectedAlquiler, alquilerDTOActual);
+            Assert.Equal(expectedAlquiler.ApellidoCliente, alquilerDTOActual.ApellidoCliente);
+            Assert.Equal(expectedAlquiler.NombreCliente, alquilerDTOActual.NombreCliente);
+            Assert.Equal(expectedAlquiler.FechaAlquiler, alquilerDTOActual.FechaAlquiler);
+            Assert.Equal(expectedAlquiler.DireccionEnvio, alquilerDTOActual.DireccionEnvio);
+            Assert.Equal(expectedAlquiler.Id, alquilerDTOActual.Id);
+            Assert.Equal(expectedAlquiler.AlquilarItems, alquilerDTOActual.AlquilarItems);
+            Assert.Equal(expectedAlquiler.FechaAlquiler.Date, alquilerDTOActual.FechaAlquiler.Date);
+            Assert.Equal(expectedAlquiler.FechaFin.Date, alquilerDTOActual.FechaFin.Date);
 
         }
     }

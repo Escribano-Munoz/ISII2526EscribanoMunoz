@@ -80,11 +80,11 @@ namespace AppForSEII2526.UT.AlquileresController_test
 
             var allTests = new List<object[]>
             {             //input for createalquiler - Error expected
-                new object[] { alquilerNoITem, "Error! You must include at least one movie to be rented",  },
-                new object[] { alquilerInicioAntesQueHoy, "Error! Your rental date must start later than today", },
-                new object[] { alquilerFinAntesQueInicio, "Error! Your rental must end later than it starts", },
-                new object[] { AlquilerApplicationUser, "Error! UserName is not registered", },
-                new object[] { alquilerHerramientaNoDisponible, "Error! Movie titled 'The lord of the rings' is not available for being rented from", },
+                new object[] { alquilerNoITem, "AlquilarItems", "Error! Debes incluir una herramienta para que pueda ser alquilada",  },
+                new object[] { alquilerInicioAntesQueHoy, "FechaInicio", "Error! Tu fecha de alquiler debe empezar despues hoy", },
+                new object[] { alquilerFinAntesQueInicio, "FechaInicio&FechaFin", "Error! Tu fecha de alquiler final debe terminar despues de la fecha de inicio", },
+                new object[] { AlquilerApplicationUser, "AlquilerApplicationUser", "Error! Nombre de usuario no registrado", },
+                new object[] { alquilerHerramientaNoDisponible, "AlquilarItems", $"Error! El nombre de la herramienta '{_herramienta1Nombre}' no esta disponible para ser alquilado desde {alquilerHerramientaNoDisponible.FechaInicio.ToShortDateString()} hasta {alquilerHerramientaNoDisponible.FechaFin.ToShortDateString()}", },
             };
 
             return allTests;
@@ -151,6 +151,14 @@ namespace AppForSEII2526.UT.AlquileresController_test
             var actualAlquilerDetailDTO = Assert.IsType<AlquilerDetailDTO>(createdResult.Value);
 
             Assert.Equal(expectedalquilerDetailDTO, actualAlquilerDetailDTO);
+            Assert.Equal(expectedalquilerDetailDTO.ApellidoCliente, actualAlquilerDetailDTO.ApellidoCliente);
+            Assert.Equal(expectedalquilerDetailDTO.NombreCliente, actualAlquilerDetailDTO.NombreCliente);
+            Assert.Equal(expectedalquilerDetailDTO.FechaAlquiler, actualAlquilerDetailDTO.FechaAlquiler);
+            Assert.Equal(expectedalquilerDetailDTO.DireccionEnvio, actualAlquilerDetailDTO.DireccionEnvio);
+            Assert.Equal(expectedalquilerDetailDTO.Id, actualAlquilerDetailDTO.Id);
+            Assert.Equal(expectedalquilerDetailDTO.AlquilarItems, actualAlquilerDetailDTO.AlquilarItems);
+            Assert.Equal(expectedalquilerDetailDTO.FechaAlquiler.Date, actualAlquilerDetailDTO.FechaAlquiler.Date);
+            Assert.Equal(expectedalquilerDetailDTO.FechaFin.Date, actualAlquilerDetailDTO.FechaFin.Date);
 
         }
 

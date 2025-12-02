@@ -63,7 +63,7 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
         public async Task<ActionResult> CreateAlquiler(AlquilerCreateDTO alquilerCreate)
         {
-            //any validation defined in PurchaseForCreate is checked before running the method so they don't have to be checked again
+             
             if (alquilerCreate.FechaInicio <= DateTime.Today)
                 ModelState.AddModelError("FechaInicio", "Error! Tu fecha de alquiler debe empezar despues hoy");
 
@@ -73,7 +73,7 @@ namespace AppForSEII2526.API.Controllers
             if (alquilerCreate.AlquilarItems.Count == 0)
                 ModelState.AddModelError("AlquilarItems", "Error! Debes incluir una herramienta para que pueda ser alquilada");
 
-            // if (!_context.ApplicationUsers.Any(au=>au.UserName==rentalForCreate.CustomerUserName))
+            
             var user = _context.ApplicationUsers.FirstOrDefault(au => au.NombreCliente == alquilerCreate.NombreCliente);
             if (user == null)
                 ModelState.AddModelError("AlquilerApplicationUser", "Error! Nombre de usuario no registrado");
