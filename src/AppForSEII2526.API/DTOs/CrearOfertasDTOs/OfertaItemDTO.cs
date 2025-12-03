@@ -32,7 +32,6 @@ namespace AppForSEII2526.API.DTOs.CrearOfertasDTOs
         public decimal PrecioOriginal { get; set; }
         public decimal PrecioFinal { get; set; }
 
-        [JsonIgnore]
         public decimal PorcentajeDescuento { get; set; }
 
         public override bool Equals(object? obj)

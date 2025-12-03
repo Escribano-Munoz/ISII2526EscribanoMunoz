@@ -8,8 +8,8 @@ namespace AppForSEII2526.API.DTOs.CrearOfertasDTOs
     public class CrearOfertasDetailDTO : CrearOfertasCreateDTO
     {
         public CrearOfertasDetailDTO(int id, DateTime fechaCreacion, DateTime fechaInicio, DateTime fechaFinal,
-             tiposMetodoPago metodoPago, tiposDirigidaOferta paraSocio, IList<OfertaItemDTO> ofertaItems)
-             : base(fechaInicio, fechaFinal, metodoPago, paraSocio, ofertaItems)
+             tiposMetodoPago metodoPago, tiposDirigidaOferta? paraSocio, IList<OfertaItemDTO> ofertaItems)
+             : base(fechaInicio, fechaFinal, metodoPago, paraSocio ?? tiposDirigidaOferta.Clientes, ofertaItems)
         {
             Id = id;
             FechaCreacion = fechaCreacion;
