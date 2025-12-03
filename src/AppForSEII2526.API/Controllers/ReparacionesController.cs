@@ -64,36 +64,36 @@ namespace AppForSEII2526.API.Controllers
         public async Task<ActionResult> CreateReparacion(ReparacionCreateDTO reparacionForCreate)
         {
             if (reparacionForCreate.FechaEntrega <= DateTime.Today)
-                ModelState.AddModelError("Fecha Entrega", "Error. Fecha de entrega debe ser posterior a hoy");
+                ModelState.AddModelError("Fecha Entrega", "Error! La fecha de entrega debe ser posterior a hoy");
 
             if (reparacionForCreate.FechaRecogida <= reparacionForCreate.FechaEntrega)
-                ModelState.AddModelError("Fecha Entrega", "Error. Fecha de recogida debe ser posterior a Fecha de entrega");
+                ModelState.AddModelError("Fecha Entrega", "Error! La fecha de recogida debe ser posterior a la fecha de entrega");
 
             if (reparacionForCreate.ReparacionItems.Count == 0)
-                ModelState.AddModelError("ReparacionItems", "Error. Debes incluir al menos una herramienta para reparar");
+                ModelState.AddModelError("ReparacionItems", "Error! Debes incluir al menos una herramienta para reparar");
 
             if (!Enum.IsDefined(typeof(tiposMetodoPago), reparacionForCreate.MetodoPago))
-                ModelState.AddModelError("MetodoPago", "Error! El método de pago seleccionado no es válido");
+                ModelState.AddModelError("MetodoPago", "Error! El metodo de pago seleccionado no es valido");
 
 
             foreach (var item in reparacionForCreate.ReparacionItems)
             {
                 if (item.Cantidad <= 0)
-                    ModelState.AddModelError($"ReparacionItems-{item.HerramientaID}", $"Error. La cantidad debe ser mayor a 0");
+                    ModelState.AddModelError("ReparacionItems", "Error! La cantidad para la herramienta debe ser mayor a 0");
             }
 
             var user = _context.ApplicationUsers.FirstOrDefault(au => au.NombreCliente == reparacionForCreate.NombreCliente && au.ApellidoCliente == reparacionForCreate.ApellidoCliente);
             if (user == null)
-                ModelState.AddModelError("Cliente", "Error. Cliente no registrado");
+                ModelState.AddModelError("Cliente", "Error! Cliente no registrado");
 
 
-            if (!ModelState.IsValid)
+            if (ModelState.ErrorCount > 0)
                 return BadRequest(new ValidationProblemDetails(ModelState));
 
 
             var herramientaIDs = reparacionForCreate.ReparacionItems.Select(ri => ri.HerramientaID).ToList();
 
-            var herramientas = _context.Herramienta.Include(h => h.ReparacionItems)
+            var herramientas = await _context.Herramienta.Include(h => h.ReparacionItems)
                 .ThenInclude(ri => ri.Reparacion)
                 .Where(h => herramientaIDs.Contains(h.Id))
 
@@ -106,11 +106,10 @@ namespace AppForSEII2526.API.Controllers
                 ri.Reparacion.FechaEntrega <= reparacionForCreate.FechaRecogida &&
                 ri.Reparacion.FechaRecogida >= reparacionForCreate.FechaEntrega)
                 })
-                .ToList();
+                .ToListAsync();
 
-            Reparacion reparacion = new Reparacion(new List<ReparacionItem>(), reparacionForCreate.FechaRecogida, reparacionForCreate.FechaEntrega, (float)reparacionForCreate.PrecioTotal, reparacionForCreate.MetodoPago, user);
+            Reparacion reparacion = new Reparacion(new List<ReparacionItem>(), reparacionForCreate.FechaRecogida, reparacionForCreate.FechaEntrega, 0, reparacionForCreate.MetodoPago, user);
 
-            reparacion.PrecioTotal = 0;
 
 
             foreach (var item in reparacionForCreate.ReparacionItems)
@@ -120,32 +119,29 @@ namespace AppForSEII2526.API.Controllers
                 if ((herramienta == null) || (herramienta.NumReparacionItems >= item.Cantidad))
                 {
                     ModelState.AddModelError("ReparacionItems", $"Error! La herramienta con ID {item.HerramientaID} no existe");
+                    continue;
                 }
-                else
+                var diasReparacion = (reparacionForCreate.FechaRecogida - reparacionForCreate.FechaEntrega).TotalDays;
+
+                if (diasReparacion < herramienta.TiempoReparacion)
                 {
-                    var diasReparacion = (reparacionForCreate.FechaRecogida - reparacionForCreate.FechaEntrega).TotalDays;
-
-                    if (diasReparacion < herramienta.TiempoReparacion)
-                    {
-                        ModelState.AddModelError("Fecha Recogida", $"Error. La herramienta '{herramienta.Nombre}' requiere {herramienta.TiempoReparacion} días para reparacion, no hay suficiente tiempo entre las fechas seleccionadas");
-                    }
-                    else
-                    {
-                        reparacion.ReparacionItems.Add(new ReparacionItem(
-                        herramienta.Id,
-                        item.Cantidad,
-                        item.Descripcion,
-                        herramienta.Precio,
-                        reparacion));
-
-                        item.Precio = herramienta.Precio;
-                    }
+                    ModelState.AddModelError("Fecha Recogida", $"Error. La herramienta '{herramienta.Nombre}' requiere {herramienta.TiempoReparacion} días para reparacion, no hay suficiente tiempo entre las fechas seleccionadas");
+                    continue;
                 }
-            }
 
+                reparacion.ReparacionItems.Add(new ReparacionItem(
+                    herramienta.Id,
+                    item.Cantidad,
+                    item.Descripcion,
+                    (float)herramienta.Precio,
+                    reparacion));
+
+                item.Precio = (double)herramienta.Precio;
+            }
+         
             reparacion.PrecioTotal = reparacion.ReparacionItems.Sum(ri => ri.precio * ri.cantidad);
 
-            if (!ModelState.IsValid)
+            if (ModelState.ErrorCount > 0)
                 return BadRequest(new ValidationProblemDetails(ModelState));
 
             _context.Add(reparacion);

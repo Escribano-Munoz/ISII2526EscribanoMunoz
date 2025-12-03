@@ -19,19 +19,30 @@ namespace AppForSEII2526.API.DTOs.ReparacionDTOs
             ReparacionItems = new List<ReparacionItemDTO>();
         }
 
+        public ReparacionCreateDTO(string nombreCliente, string apellidoCliente, DateTime fechaRecogida,
+            DateTime fechaEntrega, tiposMetodoPago metodoPago, IList<ReparacionItemDTO> reparacionItems)
+        {
+            NombreCliente = nombreCliente ?? throw new ArgumentNullException(nameof(nombreCliente));
+            ApellidoCliente = apellidoCliente ?? throw new ArgumentNullException(nameof(apellidoCliente));
+            FechaRecogida = fechaRecogida;
+            FechaEntrega = fechaEntrega;
+            MetodoPago = metodoPago;
+            ReparacionItems = reparacionItems ?? throw new ArgumentNullException(nameof(reparacionItems));
+        }
+
         public DateTime FechaRecogida { get; set; }
 
         public DateTime FechaEntrega { get; set; }
 
-        [JsonIgnore]
         public tiposMetodoPago MetodoPago { get; set; }
 
-        [EmailAddress]
-        [Required]
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, introduce tu Nombre")]
+        [StringLength(50, MinimumLength = 3, ErrorMessage = "Nombre debe tener al menos 3 caracteres")]
         public string NombreCliente { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, introduce tu Nombre y Apellido")]
-        [StringLength(50, MinimumLength = 10, ErrorMessage = "Nombre y Apellido deben tener al menos 10 caracteres")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, introduce tu Apellido")]
+        [StringLength(50, MinimumLength = 4, ErrorMessage = "Apellido debe tener al menos 4 caracteres")]
         public string ApellidoCliente { get; set; }
 
         public IList<ReparacionItemDTO> ReparacionItems { get; set; }
