@@ -112,7 +112,7 @@ namespace AppForSEII2526.API.Controllers
 
             reparacion.PrecioTotal = 0;
 
-            
+
             foreach (var item in reparacionForCreate.ReparacionItems)
             {
                 var herramienta = herramientas.FirstOrDefault(h => h.Id == item.HerramientaID);
@@ -121,14 +121,16 @@ namespace AppForSEII2526.API.Controllers
                 {
                     ModelState.AddModelError("ReparacionItems", $"Error! La herramienta con ID {item.HerramientaID} no existe");
                 }
-                else {
+                else
+                {
                     var diasReparacion = (reparacionForCreate.FechaRecogida - reparacionForCreate.FechaEntrega).TotalDays;
 
                     if (diasReparacion < herramienta.TiempoReparacion)
                     {
                         ModelState.AddModelError("Fecha Recogida", $"Error. La herramienta '{herramienta.Nombre}' requiere {herramienta.TiempoReparacion} días para reparacion, no hay suficiente tiempo entre las fechas seleccionadas");
                     }
-                    else{
+                    else
+                    {
                         reparacion.ReparacionItems.Add(new ReparacionItem(
                         herramienta.Id,
                         item.Cantidad,
