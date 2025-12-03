@@ -12,6 +12,17 @@
             AlquilarItems = alquilarItems ?? throw new ArgumentNullException(nameof(alquilarItems));
         }
 
+        public AlquilerCreateDTO(string nombreCliente, string apellidoCliente, string direccionEnvio, DateTime fechaInicio, DateTime fechaFin, TiposMetodoPago metodoPago, IList<AlquilarItemDTO> alquilarItems)
+        {
+            NombreCliente = nombreCliente ?? throw new ArgumentNullException(nameof(nombreCliente));
+            ApellidoCliente = apellidoCliente ?? throw new ArgumentNullException(nameof(apellidoCliente));
+            DireccionEnvio = direccionEnvio ?? throw new ArgumentNullException(nameof(direccionEnvio));
+            FechaInicio = fechaInicio;
+            FechaFin = fechaFin;
+            MetodoPago = metodoPago;
+            AlquilarItems = alquilarItems ?? throw new ArgumentNullException(nameof(alquilarItems));
+        }
+
         public AlquilerCreateDTO()
         {
             AlquilarItems = new List<AlquilarItemDTO>();
@@ -28,12 +39,12 @@
         [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, introduce tu direccion para el envio")]
         public string DireccionEnvio { get; set; }
 
-        [EmailAddress]
-        [Required]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, pon tu nombre")]
+        [StringLength(50, MinimumLength = 3, ErrorMessage = "Nombre debe contener al menos 3 caracteres")]
         public string NombreCliente { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, pon tu nombre y apellidos")]
-        [StringLength(50, MinimumLength = 10, ErrorMessage = "Nombre y apellidos debe contener al menos 10 caracteres")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, pon tu apellido")]
+        [StringLength(50, MinimumLength = 3, ErrorMessage = "Apellido debe contener al menos 3 caracteres")]
         public string ApellidoCliente { get; set; }
 
         public TiposMetodoPago MetodoPago { get; set; }

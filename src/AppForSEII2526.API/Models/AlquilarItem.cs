@@ -25,6 +25,17 @@
             Cantidad = cantidad;
         }
 
+        public AlquilarItem(Herramienta herramienta, Alquiler alquiler, string nombre, string material, double precio, int cantidad)
+        {
+            Herramienta = herramienta;
+            HerramientaId = herramienta.Id;
+            Alquiler = alquiler;
+            AlquilerId = alquiler.Id;
+            Precio = herramienta.Precio;
+            Cantidad = cantidad;
+
+        }
+
         [Key]
         public int Id { get; set; }
         public Herramienta Herramienta { get; set; }
