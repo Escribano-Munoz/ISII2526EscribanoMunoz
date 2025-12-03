@@ -2,6 +2,7 @@
 using AppForSEII2526.API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AppForSEII2526.API.Controllers
 {
@@ -61,90 +62,190 @@ namespace AppForSEII2526.API.Controllers
         [ProducesResponseType(typeof(string), (int)HttpStatusCode.Conflict)]
         public async Task<ActionResult> CreateCompra(CompraCreateDTO compraCreate)
         {
-            //any validation defined in CompraCreate is checked before running the method so they don't have to be checked again
+            // Validaciones iniciales
             if (compraCreate.CompraItems.Count == 0)
                 ModelState.AddModelError("CompraItems", "Error! Debes incluir al menos una herramienta para comprar");
 
-            // if (!_context.ApplicationUsers.Any(au=>au.UserName==rentalForCreate.CustomerUserName))
-            var user = _context.ApplicationUsers.FirstOrDefault(au => au.NombreCliente == compraCreate.NombreCliente);
-            if (user == null)
-                ModelState.AddModelError("CompraApplicationUser", "Error! NombreCliente no esta registrado");
+            if (compraCreate.FechaCompra.Date < DateTime.Today.Date)
+                ModelState.AddModelError("FechaCompra", "Error! Tu fecha de compra debe empezar al menos hoy");
 
-            if (ModelState.ErrorCount > 0)
-                return BadRequest(new ValidationProblemDetails(ModelState));
-
-
-            var herramientaNombres = compraCreate.CompraItems.Select(ci => ci.Nombre).ToList<string>();
-
-            var herramientas = _context.Herramienta.Include(h => h.CompraItems)
-                .ThenInclude(ci => ci.Compra)
-                .Where(h => herramientaNombres.Contains(h.Nombre))
-
-                //we use an anonymous type https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/types/anonymous-types
-                .Select(h => new {
-                    h.Id,
-                    h.Nombre,
-                    h.Material,
-                    h.Precio,
-                    NumeroDeComprados = h.CompraItems
-                        .Where(ci => herramientaNombres.Contains(h.Nombre))
-                        .Sum(ci => ci.Cantidad),
-                })
-                .ToList();
-
-
-            Compra compra = new Compra(DateTime.Now, new List<CompraItem>(),
-                (AppForSEII2526.API.Models.TiposMetodoPago)compraCreate.MetodoPago, compraCreate.DireccionEnvio, user);
-
-
-        compra.precioTotal = 0;
-
+            if (!Enum.IsDefined(typeof(TiposMetodoPago), compraCreate.MetodoPago))
+            {
+                ModelState.AddModelError("MetodoPago", "Error! El Metodo de Pago no es valido");
+            }
 
             foreach (var item in compraCreate.CompraItems)
             {
-                var herramienta = herramientas.FirstOrDefault(h => h.Nombre == item.Nombre);
-                //we must check that there is enough quantity to be rented in the database
-                if ((herramienta == null) || (herramienta.NumeroDeComprados >= herramienta.Precio))
+                if (item.Cantidad <= 0)
                 {
-                    ModelState.AddModelError("CompraItems", $"Error! Herramienta nombrada '{item.Nombre}' no es valido para ser comprado");
-                }
-                else
-                {
-                    // rental does not exist in the database yet and does not have a valid Id, so we must relate rentalitem to the object rental
-                    compra.CompraItems.Add(new CompraItem(compra, herramienta.Id, herramienta.Precio, item.Cantidad, item.Descripcion));
-                    item.Precio = herramienta.Precio;
+                    ModelState.AddModelError("CompraItems", "Error! Debes seleccionar al menos una herramienta de ese tipo para comprarla");
                 }
             }
-            compra.precioTotal = compra.CompraItems.Sum(ci => (decimal)ci.Precio * ci.Cantidad);
 
+            // Buscar usuario de forma asíncrona
+            var user = await _context.ApplicationUsers
+                .FirstOrDefaultAsync(au => au.NombreCliente == compraCreate.NombreCliente
+                                        && au.ApellidoCliente == compraCreate.ApellidoCliente);
 
-            //if there is any problem because of the available quantity of movies or because the movie does not exist
-            if (ModelState.ErrorCount > 0)
+            if (user == null)
+                ModelState.AddModelError("CompraApplicationUser", "Error! Cliente no esta registrado");
+
+            // Si hay errores de validación, retornar BadRequest
+            if (!ModelState.IsValid)
+                return BadRequest(new ValidationProblemDetails(ModelState));
+
+            // Obtener IDs de herramientas del DTO
+            var herramientaIDs = compraCreate.CompraItems.Select(ci => ci.HerramientaID).Distinct().ToList();
+
+            // Obtener información básica de herramientas para validación
+            var herramientasInfo = await _context.Herramienta
+                .Where(h => herramientaIDs.Contains(h.Id))
+                .Select(h => new
+                {
+                    h.Id,
+                    h.Nombre,
+                    h.Material,
+                    h.Precio
+                })
+                .ToListAsync();
+
+            // Obtener las entidades Herramienta reales para establecer relaciones
+            var herramientasReales = await _context.Herramienta
+                .Where(h => herramientaIDs.Contains(h.Id))
+                .ToListAsync();
+
+            // Diccionario para acceso rápido a herramientas por ID
+            var herramientasDict = herramientasReales.ToDictionary(h => h.Id, h => h);
+
+            // Crear la compra
+            Compra compra = new Compra(
+                compraCreate.FechaCompra,
+                new List<CompraItem>(),
+                compraCreate.MetodoPago,
+                compraCreate.DireccionEnvio,
+                0,
+                user);
+
+            // Procesar cada item del DTO
+            foreach (var itemDTO in compraCreate.CompraItems)
+            {
+                // Buscar información de la herramienta para validar existencia
+                var herramientaInfo = herramientasInfo.FirstOrDefault(h => h.Id == itemDTO.HerramientaID);
+
+                // Validar si la herramienta existe
+                if (herramientaInfo == null)
+                {
+                    ModelState.AddModelError("CompraItems", $"Error! Herramienta con ID '{itemDTO.HerramientaID}' no encontrada");
+                    continue;
+                }
+
+                // Obtener la entidad Herramienta real para establecer la relación
+                if (!herramientasDict.TryGetValue(itemDTO.HerramientaID, out var herramientaReal))
+                {
+                    ModelState.AddModelError("CompraItems", $"Error! Herramienta con ID '{itemDTO.HerramientaID}' no disponible");
+                    continue;
+                }
+
+                try
+                {
+                    // Crear el CompraItem
+                    var compraItem = new CompraItem(
+                        compra: compra,
+                        herramientaId: herramientaReal.Id,
+                        precio: herramientaReal.Precio,
+                        cantidad: itemDTO.Cantidad,
+                        descripcion: itemDTO.Descripcion
+                    );
+
+                    // IMPORTANTE: Establecer la relación con la Herramienta
+                    // Esto es necesario para que EF Core reconozca la relación
+                    compraItem.Herramienta = herramientaReal;
+
+                    // Agregar a la colección de CompraItems
+                    compra.CompraItems.Add(compraItem);
+
+                    // Actualizar precio en el DTO (opcional)
+                    itemDTO.Precio = (double)herramientaReal.Precio;
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("CompraItems",
+                        $"Error al crear item para herramienta '{herramientaReal.Nombre}': {ex.Message}");
+                    continue;
+                }
+            }
+
+            // Si hay errores después de procesar los items
+            if (!ModelState.IsValid)
             {
                 return BadRequest(new ValidationProblemDetails(ModelState));
             }
 
-            _context.Add(compra);
+            // Calcular precio total de la compra
+            compra.precioTotal = compra.CompraItems.Sum(ci => (decimal)ci.Precio * ci.Cantidad);
 
             try
             {
-                //we store in the database both rental and its rentalitems
+                // Agregar la compra al contexto (esto incluye sus CompraItems)
+                _context.Compra.Add(compra);
+
+                // Guardar cambios en la base de datos
                 await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex, "Error de base de datos al guardar la compra");
+
+                // Log del inner exception para debugging
+                if (ex.InnerException != null)
+                {
+                    _logger.LogError(ex.InnerException, "Inner exception detalles");
+                    return Conflict($"Error en base de datos: {ex.InnerException.Message}");
+                }
+
+                return Conflict("Error! No se pudo guardar la compra en la base de datos");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                ModelState.AddModelError("Compra", $"Error! Hubo un error al guardar su compra, por favor, intentelo mas tarde");
-                return Conflict("Error" + ex.Message);
-
+                _logger.LogError(ex, "Error inesperado al guardar la compra");
+                return Conflict($"Error! Hubo un problema al procesar tu compra: {ex.Message}");
             }
 
-            //it returns rentalDetail
-            var compraDetail = new CompraDetailDTO(compra.Id,
-                compra.ApplicationUser.NombreCliente, compra.ApplicationUser.ApellidoCliente,
-                compra.ApplicationUser.DireccionEnvio, compra.FechaCompra,
-                compraCreate.CompraItems);
+            // Recargar la compra con todas las relaciones necesarias para el DTO
+            // Esto asegura que tengamos todos los datos cargados
+            var compraCompleta = await _context.Compra
+                .AsNoTracking() // Solo lectura, mejora performance
+                .Include(c => c.ApplicationUser)
+                .Include(c => c.CompraItems)
+                    .ThenInclude(ci => ci.Herramienta)
+                .FirstOrDefaultAsync(c => c.Id == compra.Id);
 
+            if (compraCompleta == null)
+            {
+                return Conflict("Error! La compra fue creada pero no se puede recuperar para mostrar detalles");
+            }
+
+            // Convertir CompraItems a DTOs
+            var compraItemDTOs = compraCompleta.CompraItems.Select(ci =>
+                new CompraItemDTO(
+                    ci.herramientaId,
+                    ci.Herramienta?.Nombre ?? "Herramienta no disponible",
+                    ci.Herramienta?.Material ?? "Material no especificado",
+                    (double)ci.Precio,
+                    ci.Cantidad,
+                    ci.Descripcion ?? string.Empty
+                )).ToList();
+
+            // Crear el DTO de respuesta
+            var compraDetail = new CompraDetailDTO(
+                compraCompleta.Id,
+                compraCompleta.ApplicationUser?.NombreCliente ?? compraCreate.NombreCliente,
+                compraCompleta.ApplicationUser?.ApellidoCliente ?? compraCreate.ApellidoCliente,
+                compraCompleta.DireccionEnvio,
+                compraCompleta.FechaCompra,
+                compraCompleta.MetodoPago,
+                compraItemDTOs
+            );
             return CreatedAtAction("GetCompra", new { id = compra.Id }, compraDetail);
         }
 
