@@ -18,13 +18,26 @@ namespace AppForSEII2526.API.Models
 
         public Compra(DateTime fechaCompra, IList<CompraItem> compraItems, TiposMetodoPago metodoPago, string direccionEnvio, ApplicationUser applicationUser)
         {
-            precioTotal = Math.Round(CompraItems.Sum(ci => (decimal)ci.Precio * ci.Cantidad), 2);
 
             FechaCompra = fechaCompra;
-            CompraItems = compraItems.ToList();
+            CompraItems = compraItems.ToList() ?? new List<CompraItem>();
             MetodoPago = metodoPago;
             DireccionEnvio = direccionEnvio;
             ApplicationUser = applicationUser;
+
+            precioTotal = Math.Round(CompraItems.Sum(ci => (decimal)ci.Precio * ci.Cantidad), 2);
+        }
+
+        public Compra(DateTime fechaCompra, IList<CompraItem> compraItems, TiposMetodoPago metodoPago, string direccionEnvio, decimal precioTotal, ApplicationUser applicationUser)
+        {
+
+            FechaCompra = fechaCompra;
+            CompraItems = compraItems.ToList() ?? new List<CompraItem>();
+            MetodoPago = metodoPago;
+            DireccionEnvio = direccionEnvio;
+            ApplicationUser = applicationUser;
+
+            this.precioTotal = precioTotal;
         }
 
 

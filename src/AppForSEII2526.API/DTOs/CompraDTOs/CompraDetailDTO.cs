@@ -14,6 +14,13 @@
             Id = id;
             FechaCompra = fechaCompra;
         }
+
+        public CompraDetailDTO(int id, string nombreCliente, string apellidoCliente,
+            string direccionEnvio, DateTime fechaCompra,TiposMetodoPago metodoPago, IList<CompraItemDTO> compraItems)
+        {
+            Id = id;
+            FechaCompra = fechaCompra;
+        }
         public int Id { get; set; }
 
         public DateTime FechaCompra { get; set; }

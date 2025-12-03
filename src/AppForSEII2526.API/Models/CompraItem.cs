@@ -1,4 +1,6 @@
-﻿namespace AppForSEII2526.API.Models
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace AppForSEII2526.API.Models
 {
     [PrimaryKey("herramientaId", "compraId")]
     public class CompraItem
@@ -18,7 +20,7 @@
             Descripcion = descripcion;
         }
 
-        public CompraItem(Compra compra, int herramientaId, float precio, int cantidad, string descripcion)
+        public CompraItem(Compra compra, int herramientaId, double precio, int cantidad, string descripcion)
         {
             Compra = compra;
             herramientaId = herramientaId;
@@ -36,6 +38,19 @@
 
         }
 
+        public CompraItem(Herramienta herramienta, Compra compra, string nombre, string material, double precio, int cantidad, string descripcion = "")
+        {
+            Herramienta = herramienta;
+            Compra = compra;
+            herramientaId = herramienta.Id;
+            this.compraId = compra.Id;
+            Precio = precio;
+            Cantidad = cantidad;
+            Descripcion = descripcion;
+
+        }
+
+
         public Herramienta Herramienta { get; set; }
 
         public Compra Compra { get; set; }
@@ -48,7 +63,7 @@
         [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser al menos 1")]
         public int Cantidad { get; set; }
 
-        public float Precio { get; set; }
+        public double Precio { get; set; }
 
         [Required]
         public string Descripcion { get; set; }

@@ -18,6 +18,17 @@
             CompraItems = new List<CompraItemDTO>();
         }
 
+        public CompraCreateDTO(string nombreCliente, string apellidoCliente,
+            string direccionEnvio, DateTime fechaCompra, TiposMetodoPago metodoPago,
+            IList<CompraItemDTO> compraItems)
+        {
+            NombreCliente = nombreCliente ?? throw new ArgumentNullException(nameof(nombreCliente));
+            ApellidoCliente = apellidoCliente ?? throw new ArgumentNullException(nameof(apellidoCliente));
+            DireccionEnvio = direccionEnvio ?? throw new ArgumentNullException(nameof(direccionEnvio));
+            FechaCompra = fechaCompra;
+            MetodoPago = metodoPago;
+            CompraItems = compraItems ?? throw new ArgumentNullException(nameof(compraItems));
+        }
 
         [DataType(System.ComponentModel.DataAnnotations.DataType.MultilineText)]
         [Display(Name = "Direccion de Envio")]
@@ -25,12 +36,12 @@
         [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, introduzca su direccion para envio")]
         public string DireccionEnvio { get; set; }
 
-        [EmailAddress]
-        [Required]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, introduzca su Nombre")]
+        [StringLength(50, MinimumLength = 3, ErrorMessage = "Nombre debe tener al menos 3 caracteres")]
         public string NombreCliente { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, introduzca su Nombre y Apellido")]
-        [StringLength(50, MinimumLength = 10, ErrorMessage = "Nombre y Apellido deben tener al menos 10 caracteres")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, introduzca su Apellido")]
+        [StringLength(50, MinimumLength = 4, ErrorMessage = "Apellido debe tener al menos 4 caracteres")]
         public string ApellidoCliente { get; set; }
 
         public TiposMetodoPago MetodoPago { get; set; }
