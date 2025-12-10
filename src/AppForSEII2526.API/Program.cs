@@ -1,9 +1,13 @@
+using AppForSEII2526.Logging;
 using Microsoft.Data.Sqlite;
 using System.Data.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Logging.AddRabbitMQ(builder.Configuration.GetSection("RabbitMQ"));
+//”RabbitMQ” coincide con el nombre del bloque de propiedades en appsettings.json
 
 builder.Services.AddControllers()
 //show definitions of enums as strings
