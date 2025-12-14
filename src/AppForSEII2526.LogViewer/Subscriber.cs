@@ -8,14 +8,20 @@ namespace LogViewer
 {
     public class Subscriber
     {
-        private readonly string _hostname = "localhost";
-        private readonly string _exchangeName = "logs";
+        private readonly string _hostname = "192.168.1.130";
+        private readonly string _exchangeName = "logs-topic";
+        private readonly string _topicPattern;
         private readonly string _userName = "guest";
         private readonly string _password = "guest";
         private readonly int _port = 5672;
 
         private IConnection _connection;
         private IModel _channel;
+
+        public Subscriber(string topicPattern = "#")
+        {
+            _topicPattern = topicPattern;
+        }
 
         public void Start()
         {
@@ -27,13 +33,28 @@ namespace LogViewer
                 Port = _port
             };
             _connection = factory.CreateConnection();
+
             _channel = _connection.CreateModel();
-            _channel.ExchangeDeclare(_exchangeName, ExchangeType.Fanout, durable: true);
+
+            _channel.ExchangeDeclare(
+                exchange: _exchangeName,
+                type: ExchangeType.Topic,
+                durable: true
+            );
 
             var tempQueue = _channel.QueueDeclare();
             var queueName = tempQueue.QueueName;
 
-            _channel.QueueBind(queue: queueName, exchange: _exchangeName, routingKey: "");
+            _channel.QueueBind(
+                queue: queueName,
+                exchange: _exchangeName,
+                routingKey: _topicPattern
+            );
+
+            Console.WriteLine($"Suscrito a: {_exchangeName}");
+            Console.WriteLine($"Topic: {_topicPattern}");
+            Console.WriteLine($"Cola: {queueName}");
+            Console.WriteLine($"Esperando logs...\n");
 
             var consumer = new EventingBasicConsumer(_channel);
 
@@ -44,10 +65,10 @@ namespace LogViewer
 
                 try
                 {
-                    using JsonDocument doc = JsonDocument.Parse(messageJson);
+                    using var doc = JsonDocument.Parse(messageJson);
                     var root = doc.RootElement;
 
-                    Console.WriteLine($"----LOG----");
+                    Console.WriteLine($"─── LOG [{ea.RoutingKey}] ───");
 
                     if (root.TryGetProperty("Timestamp", out var timestamp))
                         Console.WriteLine($"Hora: {timestamp}");
@@ -58,20 +79,17 @@ namespace LogViewer
                     if (root.TryGetProperty("Message", out var message))
                         Console.WriteLine($"Mensaje: {message}");
 
-                    if (root.TryGetProperty("Category", out var category))
-                        Console.WriteLine($"Categoría: {category}");
-
-                    Console.WriteLine($"-----------");
+                    Console.WriteLine($"─────────────────────────────\n");
                 }
-                catch (JsonException)
+                catch
                 {
-                    Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] {messageJson}");
+                    Console.WriteLine($"[RAW] {messageJson}\n");
                 }
             };
 
             _channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
 
-            Console.WriteLine("Esperando logs... Presiona ENTER para salir.");
+            Console.WriteLine("Presiona ENTER para salir.");
             Console.ReadLine();
 
             _channel?.Close();
