@@ -1,14 +1,15 @@
+using AppForSEII2526.Logging;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Collections.Concurrent;
 
-namespace AppForSEII2526.Logging;
+namespace AppForSEII2526.API.Logging;
 
 [ProviderAlias("RabbitMQ")]
 public class RabbitMQLoggerProvider : ILoggerProvider
 {
     private readonly RabbitMQLoggerConfiguration _config;
-    private readonly Dictionary<string, RabbitMQLogger> _loggers = new();
-    private readonly Lock _lock = new Lock();
+    private readonly ConcurrentDictionary<string, RabbitMQLogger> _loggers = new();
 
     public RabbitMQLoggerProvider(IOptions<RabbitMQLoggerConfiguration> config)
     {
@@ -16,25 +17,12 @@ public class RabbitMQLoggerProvider : ILoggerProvider
     }
 
     public ILogger CreateLogger(string categoryName)
-    {
-        lock (_lock)
-        {
-            if (!_loggers.TryGetValue(categoryName, out var logger))
-            {
-                logger = new RabbitMQLogger(categoryName, _config);
-                _loggers[categoryName] = logger;
-            }
-
-            return logger;
-        }
-    }
+        => _loggers.GetOrAdd(categoryName, name => new RabbitMQLogger(name, _config));
 
     public void Dispose()
     {
         foreach (var logger in _loggers.Values)
-        {
             logger.Dispose();
-        }
 
         _loggers.Clear();
     }

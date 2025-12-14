@@ -1,8 +1,9 @@
+using AppForSEII2526.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace AppForSEII2526.Logging;
+namespace AppForSEII2526.API.Logging;
 
 public static class RabbitMQLoggerExtensions
 {
