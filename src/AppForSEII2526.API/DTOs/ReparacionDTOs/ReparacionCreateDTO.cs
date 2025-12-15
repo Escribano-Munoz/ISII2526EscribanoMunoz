@@ -30,11 +30,25 @@ namespace AppForSEII2526.API.DTOs.ReparacionDTOs
             ReparacionItems = reparacionItems ?? throw new ArgumentNullException(nameof(reparacionItems));
         }
 
+        public ReparacionCreateDTO(string nombreCliente, string apellidoCliente, DateTime fechaRecogida,
+            DateTime fechaEntrega, tiposMetodoPago metodoPago, string? telefono, IList<ReparacionItemDTO> reparacionItems)
+        {
+            NombreCliente = nombreCliente ?? throw new ArgumentNullException(nameof(nombreCliente));
+            ApellidoCliente = apellidoCliente ?? throw new ArgumentNullException(nameof(apellidoCliente));
+            FechaRecogida = fechaRecogida;
+            FechaEntrega = fechaEntrega;
+            MetodoPago = metodoPago;
+            Telefono = telefono;
+            ReparacionItems = reparacionItems ?? throw new ArgumentNullException(nameof(reparacionItems));
+        }
+
         public DateTime FechaRecogida { get; set; }
 
         public DateTime FechaEntrega { get; set; }
 
         public tiposMetodoPago MetodoPago { get; set; }
+
+        public string? Telefono { get; set; }
 
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "Por favor, introduce tu Nombre")]
@@ -64,6 +78,7 @@ namespace AppForSEII2526.API.DTOs.ReparacionDTOs
             return obj is ReparacionCreateDTO dTO &&
                    NombreCliente == dTO.NombreCliente &&
                    ApellidoCliente == dTO.ApellidoCliente &&
+                   Telefono == dTO.Telefono &&
                    ReparacionItems.SequenceEqual(dTO.ReparacionItems) &&
                    PrecioTotal == dTO.PrecioTotal;
         }

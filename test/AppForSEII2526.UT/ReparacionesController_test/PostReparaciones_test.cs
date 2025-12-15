@@ -52,31 +52,31 @@ namespace AppForSEII2526.UT.ReparacionesController_test
 
             //Caso 1: Cliente no existe
             var usuarioNoExiste = new ReparacionCreateDTO("NoExiste", "NoExiste",
-                DateTime.Today.AddDays(5), DateTime.Today.AddDays(2), tiposMetodoPago.TarjetaCredito, reparacionItems);
+                DateTime.Today.AddDays(5), DateTime.Today.AddDays(2), tiposMetodoPago.TarjetaCredito, "696852142", reparacionItems);
 
             //Caso 2: Sin items en reparación
             var sinItems = new ReparacionCreateDTO("Victoria", "Escribano Tarraga",
-                DateTime.Today.AddDays(5), DateTime.Today.AddDays(2), tiposMetodoPago.TarjetaCredito, new List<ReparacionItemDTO>());
+                DateTime.Today.AddDays(5), DateTime.Today.AddDays(2), tiposMetodoPago.TarjetaCredito, "696852142", new List<ReparacionItemDTO>());
 
             //Caso 3: Fecha de entrega anterior a hoy
             var fechaEntregaPasada = new ReparacionCreateDTO("Victoria", "Escribano Tarraga",
-                DateTime.Today.AddDays(5), DateTime.Today.AddDays(-1), tiposMetodoPago.TarjetaCredito, reparacionItems);
+                DateTime.Today.AddDays(5), DateTime.Today.AddDays(-1), tiposMetodoPago.TarjetaCredito, "696852142", reparacionItems);
 
             //Caso 4: Fecha recogida anterior a la Fecha entrega
             var fechasInvertidas = new ReparacionCreateDTO("Victoria", "Escribano Tarraga",
-                DateTime.Today.AddDays(2), DateTime.Today.AddDays(5), tiposMetodoPago.TarjetaCredito, reparacionItems);
+                DateTime.Today.AddDays(2), DateTime.Today.AddDays(5), tiposMetodoPago.TarjetaCredito, "696852142", reparacionItems);
 
             //Caso 5: Metodo de pago invalido
             var metodoPagoInvalido = new ReparacionCreateDTO("Victoria", "Escribano Tarraga",
-                DateTime.Today.AddDays(5), DateTime.Today.AddDays(2), (tiposMetodoPago)5, reparacionItems);
+                DateTime.Today.AddDays(5), DateTime.Today.AddDays(2), (tiposMetodoPago)5, "696852142", reparacionItems);
 
             //Caso 6: Cantidad invalida
             var cantidadInvalida = new ReparacionCreateDTO("Victoria", "Escribano Tarraga",
-                DateTime.Today.AddDays(5), DateTime.Today.AddDays(2), tiposMetodoPago.TarjetaCredito, new List<ReparacionItemDTO>() { new ReparacionItemDTO(1, "Martillo", 30.0, 0, "Mango roto") });
+                DateTime.Today.AddDays(5), DateTime.Today.AddDays(2), tiposMetodoPago.TarjetaCredito, "696852142", new List<ReparacionItemDTO>() { new ReparacionItemDTO(1, "Martillo", 30.0, 0, "Mango roto") });
 
             // Caso 7: Herramienta no existe
             var herramientaNoExiste = new ReparacionCreateDTO("Victoria", "Escribano Tarraga",
-                DateTime.Today.AddDays(5), DateTime.Today.AddDays(2), tiposMetodoPago.TarjetaCredito, new List<ReparacionItemDTO>() { new ReparacionItemDTO(999, "HerramientaInexistente", 30.0, 2, "Descripción") });
+                DateTime.Today.AddDays(5), DateTime.Today.AddDays(2), tiposMetodoPago.TarjetaCredito, "696852142", new List<ReparacionItemDTO>() { new ReparacionItemDTO(999, "HerramientaInexistente", 30.0, 2, "Descripción") });
 
             var allTests = new List<object[]>
             {             //input for createpurchase - Error expected
@@ -134,7 +134,7 @@ namespace AppForSEII2526.UT.ReparacionesController_test
             DateTime recogida = DateTime.Today.AddDays(10);
 
             var reparacionDTO = new ReparacionCreateDTO("Victoria", "Escribano Tarraga",
-                recogida, entrega, tiposMetodoPago.TarjetaCredito,
+                recogida, entrega, tiposMetodoPago.TarjetaCredito, "696852142",
                 new List<ReparacionItemDTO>() {
             new ReparacionItemDTO(1, "Martillo", 30.0, 1, "Mango roto")
                 });
