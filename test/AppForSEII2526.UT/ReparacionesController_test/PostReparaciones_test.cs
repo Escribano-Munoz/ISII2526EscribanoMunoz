@@ -78,6 +78,10 @@ namespace AppForSEII2526.UT.ReparacionesController_test
             var herramientaNoExiste = new ReparacionCreateDTO("Victoria", "Escribano Tarraga",
                 DateTime.Today.AddDays(5), DateTime.Today.AddDays(2), tiposMetodoPago.TarjetaCredito, "696852142", new List<ReparacionItemDTO>() { new ReparacionItemDTO(999, "HerramientaInexistente", 30.0, 2, "Descripción") });
 
+            //Caso 8: Fecha de entrega mayor por 7 dias a hoy (Modificacion Sprint 2)
+            var fechaEntregaMayor = new ReparacionCreateDTO("Victoria", "Escribano Tarraga",
+                DateTime.Today.AddDays(15), DateTime.Today.AddDays(10), tiposMetodoPago.TarjetaCredito, "696852142", reparacionItems);
+
             var allTests = new List<object[]>
             {             //input for createpurchase - Error expected
                 new object[] { usuarioNoExiste, "Error! Cliente no registrado",  },
@@ -86,7 +90,8 @@ namespace AppForSEII2526.UT.ReparacionesController_test
                 new object[] { fechasInvertidas, "Error! La fecha de recogida debe ser posterior a la fecha de entrega", },
                 new object[] { metodoPagoInvalido, "Error! El metodo de pago seleccionado no es valido", },
                 new object[] { cantidadInvalida, "Error! La cantidad para la herramienta debe ser mayor a 0", },
-                new object[] { herramientaNoExiste, "Error! La herramienta con ID", }
+                new object[] { herramientaNoExiste, "Error! La herramienta con ID", },
+                new object[] { fechaEntregaMayor, "¡Error!, debes entregar tus herramientas antes de que pase una semana", }
             };
 
             return allTests;
