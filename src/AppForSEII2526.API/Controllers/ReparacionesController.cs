@@ -66,6 +66,9 @@ namespace AppForSEII2526.API.Controllers
             if (reparacionForCreate.FechaEntrega <= DateTime.Today)
                 ModelState.AddModelError("Fecha Entrega", "Error! La fecha de entrega debe ser posterior a hoy");
 
+            if (reparacionForCreate.FechaEntrega > DateTime.Today.AddDays(7).Date)
+                ModelState.AddModelError("Fecha Entrega", "¡Error!, debes entregar tus herramientas antes de que pase una semana");
+
             if (reparacionForCreate.FechaRecogida <= reparacionForCreate.FechaEntrega)
                 ModelState.AddModelError("Fecha Entrega", "Error! La fecha de recogida debe ser posterior a la fecha de entrega");
 
