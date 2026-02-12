@@ -19,8 +19,6 @@ namespace AppForSEII2526.API.DTOs.CrearOfertasDTOs
             Fabricante = fabricante;
             PrecioOriginal = precioOriginal;
             PrecioFinal = precioFinal;
-            
-
         }
 
        
